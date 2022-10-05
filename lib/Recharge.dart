@@ -1,27 +1,57 @@
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-//import 'package:card_swiper/card_swiper.dart'; // card_swiper 이용해서 쉼 일정 보여주기
 
-class Recharge extends StatelessWidget{
+class Recharge extends StatefulWidget{
+  @override
+  _RechargeState createState() {
+    return new _RechargeState();
+  }
+}
+
+class _RechargeState extends State<Recharge>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //body: Text('route test : /recharge'),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Text('쉼 일정 추가하기'),
-              // 관련 이미지 추가
-            ],
-          ),
-          Row(
-            children: [
-              // card or list 선택
-            ],
-          ),
-          // card_swiper or list 보여주기
-        ],
+      appBar: AppBar(title:Text('recharge.dart')),
+      body: Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          return Image.asset(
+            "assets/hotel-prince.jpg",
+            fit: BoxFit.fill,
+          );
+        },
+        itemCount: 10,
+        viewportFraction: 0.8,
+        scale: 0.9,
       ),
+
+      // Column(
+      //   children: [
+      //     // Container(height: 100,),
+      //     // Row(
+      //     //   children: [
+      //     //     Text(
+      //     //       '쉼 일정 추가하기',
+      //     //       style: TextStyle(
+      //     //         fontSize: 40,
+      //     //         fontWeight: FontWeight.bold,
+      //     //       ),
+      //     //     ),
+      //     //   ],
+      //     // ),
+      //     Swiper(
+      //       itemBuilder: (BuildContext context, int index) {
+      //         return new Image.network(
+      //           "http://via.placeholder.com/288x188",
+      //           fit: BoxFit.fill,
+      //         );
+      //       },
+      //       itemCount: 10,
+      //       viewportFraction: 0.8,
+      //       scale: 0.9,
+      //     ),
+      //   ],
+      // ),
     );
   }
 
