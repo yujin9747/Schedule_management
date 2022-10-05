@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class Recharge extends StatefulWidget{
   @override
@@ -13,45 +14,39 @@ class _RechargeState extends State<Recharge>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title:Text('recharge.dart')),
-      body: Swiper(
-        itemBuilder: (BuildContext context, int index) {
-          return Image.asset(
-            "assets/hotel-prince.jpg",
-            fit: BoxFit.fill,
-          );
-        },
-        itemCount: 10,
-        viewportFraction: 0.8,
-        scale: 0.9,
+      body: Column(
+        children: [
+          Container(height: 100,),
+          Row(
+            children: [
+              const SizedBox(width: 20,),
+              Text(
+                '쉼 추가하기',
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Expanded(child: swipeCardBuilder()),
+        ],
       ),
+    );
+  }
 
-      // Column(
-      //   children: [
-      //     // Container(height: 100,),
-      //     // Row(
-      //     //   children: [
-      //     //     Text(
-      //     //       '쉼 일정 추가하기',
-      //     //       style: TextStyle(
-      //     //         fontSize: 40,
-      //     //         fontWeight: FontWeight.bold,
-      //     //       ),
-      //     //     ),
-      //     //   ],
-      //     // ),
-      //     Swiper(
-      //       itemBuilder: (BuildContext context, int index) {
-      //         return new Image.network(
-      //           "http://via.placeholder.com/288x188",
-      //           fit: BoxFit.fill,
-      //         );
-      //       },
-      //       itemCount: 10,
-      //       viewportFraction: 0.8,
-      //       scale: 0.9,
-      //     ),
-      //   ],
-      // ),
+}
+
+class swipeCardBuilder extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Swiper(
+      itemCount:3,
+      itemBuilder: (BuildContext context, int index) {
+        return Lottie.asset('assets/rechargeCard$index.json');
+      },
+      viewportFraction: 0.8,
+      scale: 0.5,
     );
   }
 
