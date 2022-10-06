@@ -17,9 +17,9 @@ class Recharge extends StatefulWidget{
 
   // 기존에 있던 카드 리스트와 사용자가 추가한 리스트가 합쳐진 채로 recharge.dart 페이지가 넘어와야 함.
   List<card> rechargeCardList = [   
-    card('assets/rechargeCard0.json', 'driving'),
-    card('assets/rechargeCard1.json', 'running'),
-    card('assets/rechargeCard2.json', 'coffee'),
+    card('assets/rechargeCard0.json', 'Driving'),
+    card('assets/rechargeCard1.json', 'Running'),
+    card('assets/rechargeCard2.json', 'Coffee'),
   ];
   
   @override
@@ -59,9 +59,10 @@ class _RechargeState extends State<Recharge>{
                 else if(index == 1) isSelected[0] = false;
               });
             },
-            fillColor: Colors.green,
-            borderRadius: BorderRadius.circular(10),
-            selectedColor: Colors.black,
+            fillColor: Color.fromRGBO(234, 250, 231, 1),
+            borderRadius: BorderRadius.circular(20),
+            selectedColor: Color.fromRGBO(78, 203, 113, 1),
+            color: Color.fromRGBO(149, 150, 149, 1),
             isSelected: isSelected,
             children: [
               const Padding(
@@ -84,7 +85,6 @@ class _RechargeState extends State<Recharge>{
               ),
             ],
             renderBorder: false,
-            //constraints: const BoxConstraints.expand(height: 25,width: 34),
           ),
           const SizedBox(height : 50),
           isSelected[0]? Expanded(child: swipeCardBuilder(list: widget.rechargeCardList,))
@@ -107,10 +107,33 @@ class swipeCardBuilder extends StatelessWidget{
     return Swiper(
       itemCount:list.length,
       itemBuilder: (BuildContext context, int index) {
-        return Lottie.asset(list[index].assets);
+        return Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Lottie.asset(list[index].assets),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Color.fromRGBO(234, 250, 231, 1),
+              ),
+
+            ),
+            Container(
+              child:Text(
+                list[index].name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+              ),
+              margin: EdgeInsets.fromLTRB(40, 40, 0, 0),
+            ),
+          ],
+        );
+        //return Lottie.asset(list[index].assets);
       },
       viewportFraction: 0.8,
-      scale: 0.5,
+      scale: 0.8,
     );
   }
 }
