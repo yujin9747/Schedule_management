@@ -37,7 +37,7 @@ class _RechargeState extends State<Recharge>{
       appBar: AppBar(title:Text('recharge.dart')),
       body: Column(
         children: [
-          Container(height: 100,),
+          Container(height: 80,),
           Row(
             children: [
               const SizedBox(width: 20,),
@@ -48,6 +48,7 @@ class _RechargeState extends State<Recharge>{
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Image.asset('assets/rocket.png'),
             ],
           ),
           const SizedBox(height : 50),
@@ -86,7 +87,7 @@ class _RechargeState extends State<Recharge>{
             ],
             renderBorder: false,
           ),
-          const SizedBox(height : 50),
+          const SizedBox(height : 40),
           isSelected[0]? Expanded(child: swipeCardBuilder(list: widget.rechargeCardList,))
               : Expanded(child: cardListBuilder(list: widget.rechargeCardList,)),
         ],
@@ -112,9 +113,19 @@ class swipeCardBuilder extends StatelessWidget{
             Container(
               padding: EdgeInsets.all(20),
               child: Lottie.asset(list[index].assets),
+              width: 500,
+              height: 250,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
-                color: Color.fromRGBO(234, 250, 231, 1),
+                color:Color.fromRGBO(234, 250, 231, 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(78, 203, 113, 1).withOpacity(0.4),
+                    spreadRadius: 0,
+                    blurRadius: 5.0,
+                    offset: Offset(0, 10), // changes position of shadow
+                  ),
+                ],
               ),
 
             ),
@@ -149,7 +160,39 @@ class cardListBuilder extends StatelessWidget{
     return ListView.builder(
       itemCount:list.length,
       itemBuilder: (BuildContext context, int index) {
-        return Lottie.asset(list[index].assets);
+        return Row(
+          children: [
+            Container(
+              //padding: EdgeInsets.all(20),
+              child: Lottie.asset(list[index].assets),
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(78, 203, 113, 1).withOpacity(0.4),
+                    spreadRadius: 0,
+                    blurRadius: 5.0,
+                    offset: Offset(0, 10), // changes position of shadow
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child:Text(
+                list[index].name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                ),
+              ),
+              //margin: EdgeInsets.fromLTRB(40, 40, 0, 0),
+            ),
+            Divider(),
+          ],
+        );
       },
     );
   }
