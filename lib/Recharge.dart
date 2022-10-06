@@ -30,7 +30,7 @@ class Recharge extends StatefulWidget{
 
 class _RechargeState extends State<Recharge>{
   // initial state : card view
-  bool isCardView = true;
+  List<bool> isSelected = [true, false];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,35 +51,43 @@ class _RechargeState extends State<Recharge>{
             ],
           ),
           const SizedBox(height : 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          ToggleButtons(
+            onPressed: (index){
+              setState(() {
+                isSelected[index] = !isSelected[index];
+                if(index == 0) isSelected[1] = false;
+                else if(index == 1) isSelected[0] = false;
+              });
+            },
+            fillColor: Colors.green,
+            borderRadius: BorderRadius.circular(10),
+            selectedColor: Colors.black,
+            isSelected: isSelected,
             children: [
-              ElevatedButton(
-                onPressed: (){
-                  if(!isCardView){
-                    setState(() {
-                      isCardView = true;
-                    });
-                  }
-                  // if isCardView is true, nothing to do
-                },
-                child: Text('List'),
+              const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 35),
+                  child: Text(
+                    'Card',
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  )
               ),
-              ElevatedButton(
-                onPressed: (){
-                  if(isCardView){
-                    setState(() {
-                      isCardView = false;
-                    });
-                  }
-                  // if isCardView is false, nothing to do
-                },
-                child: Text('List'),
+              const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 35),
+                  child: Text(
+                    'List',
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  )
               ),
             ],
+            renderBorder: false,
+            //constraints: const BoxConstraints.expand(height: 25,width: 34),
           ),
           const SizedBox(height : 50),
-          isCardView? Expanded(child: swipeCardBuilder(list: widget.rechargeCardList,))
+          isSelected[0]? Expanded(child: swipeCardBuilder(list: widget.rechargeCardList,))
               : Expanded(child: cardListBuilder(list: widget.rechargeCardList,)),
         ],
       ),
