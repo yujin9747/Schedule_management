@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         '/' : (context) => Home(),
         '/recharge':(context) => Recharge(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
