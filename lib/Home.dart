@@ -1,3 +1,10 @@
+/*
+Things to be done.
+
+1. Fixing pod install fail error.
+2. App bar title into specific form
+ */
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -7,7 +14,6 @@ DateTime now = DateTime.now();
 var yoil = DateFormat.E('ko_KR').format(now).toString();
 var format = DateFormat("dd/MM").format(now).toString();
 String formattedDate = format + yoil;
-
 
 class Home extends StatefulWidget{
   const Home({super.key});
