@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scheduling/addSchedule.dart';
 import 'package:scheduling/login.dart';
 import 'Home.dart';
 import 'Recharge.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/' : (context) => Home(),
         '/recharge':(context) => Recharge(),
         '/login' : (context) => Login(),
+        'addSchedule' : (context) => AddSchedule(),
       },
       debugShowCheckedModeBanner: false,
     );
