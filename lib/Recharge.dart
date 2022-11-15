@@ -24,7 +24,7 @@ class Recharge extends StatefulWidget{
   
   @override
   _RechargeState createState() {
-    return new _RechargeState();
+    return _RechargeState();
   }
 }
 
