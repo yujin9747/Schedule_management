@@ -39,7 +39,7 @@ class _Home extends State<Home>{
         child: Icon(Icons.add),
         heroTag: 'addSchedule',
         onPressed: () {
-          Navigator.pushNamed(context, 'addSchedule');
+          Navigator.pushNamed(context, '/addSchedule');
         },
       ),
     );
