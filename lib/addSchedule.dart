@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -173,6 +174,10 @@ class _AddSchedule extends State<AddSchedule>{
                       inputType: InputType.date,
                     ),
                   ),
+                  FormBuilderFieldOption(
+                    value: 'when_later',
+                    child: Text('나중에 등록하기(단순 모듈 추가)'),
+                  ),
                 ],
                 validator: (value){
                   FormBuilderValidators.required();
@@ -246,6 +251,21 @@ class _AddSchedule extends State<AddSchedule>{
                 child: Text("확인"),
                 onPressed: () {
                   // Todo : upload to Database
+                  //** Test Dode : create -> 테스트 성공 **//
+                  final ref = FirebaseFirestore.instance.collection('schedules').doc('title');
+                  ref.set({
+                    "title" : "title test",
+                    "memo" : "memo test",
+                    "startDate" : DateTime.now(),
+                    "dueDate" : DateTime.now(),
+                    "timelined" : true,
+                    "startTime" : DateTime.now().hour,
+                    "endTime" : DateTime.now().hour,
+                    "importance" : 9,
+                    "dayToDo" : DateTime.now(),
+                  });
+                  //** Test Code **//
+
                   final snackbar = SnackBar(content: Text("Success : 일정이 추가되었습니다"),);
                   ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   Navigator.pop(context);
