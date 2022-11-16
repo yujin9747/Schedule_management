@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/' : (context) => Home(),
         '/recharge':(context) => Recharge(),
         '/login' : (context) => Login(),
-        'addSchedule' : (context) => AddSchedule(),
+        '/addSchedule' : (context) => AddSchedule(),
       },
       debugShowCheckedModeBanner: false,
     );

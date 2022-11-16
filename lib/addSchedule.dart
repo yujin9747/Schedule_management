@@ -14,6 +14,8 @@ class AddSchedule extends StatefulWidget{
 class _AddSchedule extends State<AddSchedule>{
   final _formkey = GlobalKey<FormBuilderState>();
   late bool timeSet = false;
+  FocusNode titleFocusNode = FocusNode();
+  FocusNode memoFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,8 @@ class _AddSchedule extends State<AddSchedule>{
             children: [
               const SizedBox(height: 20,),
               FormBuilderTextField(
+                autofocus: true,
+                focusNode: titleFocusNode,
                 name: 'title',
                 decoration: InputDecoration(
                   hintStyle: TextStyle(color: Colors.grey[800]),
@@ -42,14 +46,20 @@ class _AddSchedule extends State<AddSchedule>{
                     color: Colors.black38,
                     onPressed: () {
                       _formkey.currentState?.fields['title']?.reset();
+                      FocusScope.of(context).requestFocus(titleFocusNode);
                     },
                   ),
                 ),
                 validator: FormBuilderValidators.required(),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (value) {
+                  FocusScope.of(context).requestFocus(memoFocusNode);
+                },
               ),
               const SizedBox(height: 20,),
               FormBuilderTextField(
                 name: 'memo',
+                focusNode: memoFocusNode,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(color: Colors.grey[800]),
                   hintText: "memo",
@@ -58,9 +68,13 @@ class _AddSchedule extends State<AddSchedule>{
                     color: Colors.black38,
                     onPressed: () {
                       _formkey.currentState?.fields['memo']?.reset();
+                      FocusScope.of(context).requestFocus(memoFocusNode);
                     },
                   ),
                 ),
+                onSubmitted: (value) {
+                  FocusScope.of(context).unfocus();
+                },
               ),
               const SizedBox(height: 20,),
               FormBuilderDateRangePicker(
@@ -189,7 +203,6 @@ class _AddSchedule extends State<AddSchedule>{
           },
         ),
       ),
-      //body:
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'addSchedule',
         onPressed: () => submitAction(),
