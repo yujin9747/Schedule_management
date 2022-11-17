@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
 
 DateTime now = DateTime.now();
 
@@ -35,6 +34,13 @@ class _Home extends State<Home>{
             Text('data3'),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        heroTag: 'addSchedule',
+        onPressed: () {
+          Navigator.pushNamed(context, '/addSchedule');
+        },
       ),
     );
   }
