@@ -189,6 +189,43 @@ class _AddSchedule extends State<AddSchedule>{
                 initialValue: 'when_today',
               ),
               const SizedBox(height: 20,),
+              FormBuilderDropdown(
+                initialValue: '집',
+                name: 'where',
+                items: [
+                  DropdownMenuItem(
+                    value: '집',
+                    child: Row(
+                      children: [
+                        Text('집'),
+                        Icon(Icons.home_outlined),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: '학교',
+                    child: Row(
+                      children: [
+                        Text('학교'),
+                        Icon(Icons.school_outlined),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: '직장',
+                    child: Row(
+                      children: [
+                        Text('직장'),
+                        Icon(Icons.work_outline),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    child: Text('직접 입력'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20,),
               ElevatedButton(
                 onPressed: (){
                   // Reset form
@@ -263,6 +300,7 @@ class _AddSchedule extends State<AddSchedule>{
                     "endTime" : DateTime.now().hour,
                     "importance" : 9,
                     "dayToDo" : DateTime.now(),
+                    "where" : "where test",
                   });
                   //** Test Code **//
 
