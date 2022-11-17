@@ -49,6 +49,7 @@ dependencies:
   form_builder_validators: ^8.4.0
   cloud_firestore: ^3.5.1
   timelines: ^0.1.0
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:

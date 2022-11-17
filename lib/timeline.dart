@@ -8,7 +8,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:timelines/timelines.dart';
 
 class TimeLine extends StatefulWidget{
   @override
@@ -22,46 +21,43 @@ class _TimeLine extends State<TimeLine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("time line test"),
+        title:Text("timeline test"),
       ),
-      body: FixedTimeline.tileBuilder(
-        builder: TimelineTileBuilder.connectedFromStyle(
-          itemCount: 3,
-          connectorStyleBuilder: (context, index) => ConnectorStyle.solidLine,
-          //indicatorStyleBuilder: (context, index) => IndicatorStyle.dot,
-          contentsAlign: ContentsAlign.basic,
-          oppositeContentsBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 40,
-              child: Text('11:00'),
-            ),
-          ),
-          contentsBuilder: (context, index) => TimeLineCard(),
+      body: Container(
+        height: 200,
+        child: ListView.builder(
+          itemCount: 100,
+          itemBuilder: (context, index){
+            return IntrinsicHeight(
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("11pm"),
+                        Text("12pm"),
+                      ],
+                    ),
+                  ),
+                  VerticalDivider(thickness: 2, width: 10, color: Colors.black38),
+                  Container(
+                    height: 150,
+                    width: 300,
+                    child: Card(
+                      child: Text("Contents"),
+                    ),
+                  ),
+
+                ],
+              ),
+            );
+
+          },
         ),
       ),
     );
   }
 }
 
-class TimeLineCard extends StatelessWidget{
-  late final title;
-  late final memo;
-  late final where;
-  late final category;
-  late final startTime;
-  late final endTime;
-  late final finished;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: SizedBox(
-        width: 500,
-        height: 100,
-        child: Center(child: Text('Elevated Card')),
-      ),
-    );
-  }
-
-}
