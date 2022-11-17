@@ -190,29 +190,33 @@ class _AddSchedule extends State<AddSchedule>{
               ),
               const SizedBox(height: 20,),
               FormBuilderDropdown(
+                initialValue: '집',
                 name: 'where',
                 items: [
                   DropdownMenuItem(
+                    value: '집',
                     child: Row(
                       children: [
                         Text('집'),
-                        Icon(Icons.home),
+                        Icon(Icons.home_outlined),
                       ],
                     ),
                   ),
                   DropdownMenuItem(
+                    value: '학교',
                     child: Row(
                       children: [
                         Text('학교'),
-                        Icon(Icons.school),
+                        Icon(Icons.school_outlined),
                       ],
                     ),
                   ),
                   DropdownMenuItem(
+                    value: '직장',
                     child: Row(
                       children: [
                         Text('직장'),
-                        Icon(Icons.work),
+                        Icon(Icons.work_outline),
                       ],
                     ),
                   ),
