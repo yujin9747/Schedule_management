@@ -28,7 +28,7 @@ class _TimeLine extends State<TimeLine> {
         builder: TimelineTileBuilder.connectedFromStyle(
           itemCount: 3,
           connectorStyleBuilder: (context, index) => ConnectorStyle.solidLine,
-          indicatorStyleBuilder: (context, index) => IndicatorStyle.dot,
+          //indicatorStyleBuilder: (context, index) => IndicatorStyle.dot,
           contentsAlign: ContentsAlign.basic,
           oppositeContentsBuilder: (context, index) => Padding(
             padding: const EdgeInsets.all(8.0),
