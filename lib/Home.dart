@@ -8,6 +8,7 @@ Things to be done.
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -72,13 +73,15 @@ class _Home extends State<Home>{
                 decoration: BoxDecoration(
                   color: Colors.grey,
                 ),
-                child: Text('Drawer Header'),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text('Menu', style: TextStyle(fontSize: 20,),),
+                ),
               ),
               ListTile(
                 title: const Text('Item 1'),
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+                  FirebaseAuth.instance.signOut();
                 },
               ),
               ListTile(
@@ -165,7 +168,7 @@ class _Home extends State<Home>{
                     child: Container(
                       height: 200,
                       child: ListView.builder(
-                        itemCount: 100,
+                        itemCount: sch.length,
                         itemBuilder: (context, index){
                           return IntrinsicHeight(
                             child: Row(
@@ -175,8 +178,8 @@ class _Home extends State<Home>{
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text("11pm"),
-                                      Text("12pm"),
+                                      Text(sch[index].starttime.toString()),
+                                      Text(sch[index].endtime.toString()),
                                     ],
                                   ),
                                 ),
@@ -185,7 +188,7 @@ class _Home extends State<Home>{
                                   height: 150,
                                   width: 270,
                                   child: Card(
-                                    child: Text("Contents"),
+                                    child: Text(sch[index].id),
                                   ),
                                 ),
                               ],
@@ -203,7 +206,7 @@ class _Home extends State<Home>{
                   Container(
                     height: 200,
                     child: ListView.builder(
-                      itemCount: 100,
+                      itemCount: sch.length,
                       itemBuilder: (context, index){
                         return InkWell( // card 1
                           child: Padding(
@@ -232,16 +235,16 @@ class _Home extends State<Home>{
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 10, right: 115,),
-                                        child: Text("Computer network HW#6"),
+                                        padding: EdgeInsets.only(left: 10, right: 10,),
+                                        child: Text(sch[index].id),
                                       ),
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: Checkbox(
                                           checkColor: Colors.white,
                                           fillColor: MaterialStateProperty.resolveWith(getColor),
-                                          value: isChecked,
-                                          onChanged: (bool? value) {
+                                          value: sch[index].check,
+                                          onChanged: (bool? value) { // check data을 수정할 수 있어야함
                                             setState(() {
                                               isChecked = value!;
                                             });
@@ -298,7 +301,7 @@ class _Home extends State<Home>{
                         child: Center(
                           child: Padding(
                             padding: EdgeInsets.only(),
-                            child: Text("쉼 계획하기"),
+                            child: Text('쉼 추가하기'),
                           ),
                         ),
                       ),
@@ -308,6 +311,13 @@ class _Home extends State<Home>{
                     },
                   ),
                   const SizedBox(height: 100,),
+                  Text(sch[0].startdate),
+                  Text(sch[0].enddate),
+                  Text(sch[0].check.toString()),
+                  Text(sch[0].description),
+                  Text(sch[1].id),
+                  Text(sch.length.toString()),
+                  const SizedBox(height: 30,),
                 ],
               );
             }
@@ -317,7 +327,7 @@ class _Home extends State<Home>{
 
   Stream<List<schModel>> streamSch(){
     try{
-      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/title/dayToDo').snapshots();
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('test/user/today').snapshots();
 
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
