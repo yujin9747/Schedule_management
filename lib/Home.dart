@@ -154,6 +154,28 @@ class _Home extends State<Home>{
               Navigator.pushNamed(context, '/recharge');
             },
           ),
+          InkWell(
+            child: Padding(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+              child: Container(
+                width: 50,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blue,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(),
+                    child: Text("쉼 계획하기"),
+                  ),
+                ),
+              ),
+            ),
+            onTap: (){
+              Navigator.pushNamed(context, '/recharge');
+            },
+          ),
         ],
       ),
 
