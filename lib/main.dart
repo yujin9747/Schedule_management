@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scheduling/addSchedule.dart';
 import 'package:scheduling/login.dart';
+import 'package:scheduling/monthlySchedule.dart';
 import 'package:scheduling/timeline.dart';
 import 'Home.dart';
 import 'Recharge.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/login' : (context) => Login(),
         '/addSchedule' : (context) => AddSchedule(),
         '/timeline':(context) => TimeLine(),
+        '/monthly':(context) => monthlySchedule(),
       },
       debugShowCheckedModeBanner: false,
     );
