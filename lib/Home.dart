@@ -60,50 +60,47 @@ class _Home extends State<Home>{
             ),
           ),
         ),
+      ),
 
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            SizedBox(
+              height: 300,
+              child: DrawerHeader(
+                child: Column(
+                  children: [
+                    Progress(),
+                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                    Row(
+                      children: [
+                        Text('오늘도 좋은 하루 되세요'),
+                        Icon(Icons.tag_faces),
+                      ],
+                    ),
+                  ],
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text('Menu', style: TextStyle(fontSize: 20,),),
+                  color:Colors.yellow,
                 ),
               ),
-              ListTile(
-                title: const Text('Item 1'),
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
-                },
-              ),
-              ListTile(
-                title: const Text('Item 2'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
-          ),
+            ),
+            DrawerList(text: '홈', icon: Icons.home, route:'/'),
+            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle,route: '/addSchedule'),
+            DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded,route:'/addSchedule'),
+            DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural,route:'/recharge'),
+          ],
         ),
+      ),
 
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          heroTag: 'addSchedule',
-          backgroundColor: Colors.black,
-          onPressed: () {
-            Navigator.pushNamed(context, '/addSchedule');
-            print(format.toString());
-          },
-        ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        heroTag: 'addSchedule',
+        onPressed: () {
+          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
+        },
+      ),
 
         body: StreamBuilder<List<schModel>>(
             stream: streamSch(),
@@ -349,3 +346,68 @@ class _Home extends State<Home>{
 
 }
 
+class Progress extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _ProgressState();
+  }
+}
+
+class _ProgressState extends State<Progress>{
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 9, bottom: 9),
+      child: CircularPercentIndicator(
+        radius: 95.0,
+        lineWidth: 15.0,
+        percent: 0.8,
+        center: Text(
+          "80%",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 40,
+          ),
+        ),
+        progressColor: Colors.white,
+      ),
+    );
+  }
+}
+
+class DrawerList extends StatelessWidget{
+  late String text;
+  late IconData icon;
+  late String route;
+  DrawerList({required String text, required IconData icon, required String route}){
+    this.text = text;
+    this.icon = icon;
+    this.route = route;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Colors.grey[850],
+      ),
+      title: Text(text),
+      onTap: () {
+        print('${text} is clicked');
+        Navigator.pop(context);
+        if(route != '/') {
+          if(text == '오늘 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
+          else if(text == '내일 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
+          else Navigator.pushNamed(context, route);
+        }
+      },
+      trailing: Icon(Icons.keyboard_arrow_right),
+    );
+  }
+}
+
+class addScheduleArguments{
+  late String date;
+  addScheduleArguments(this.date);
+}
