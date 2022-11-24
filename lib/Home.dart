@@ -1,9 +1,3 @@
-/*
-Things to be done.
-
-1. Fixing pod install fail error.
-2. App bar title into specific form
- */
 
 import 'dart:developer';
 
@@ -52,7 +46,6 @@ class _Home extends State<Home>{
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0.0,
-
           leading: Builder( // menu icon
             builder: (context) => IconButton(
               icon: Icon(Icons.menu, color: Colors.black,),
@@ -60,48 +53,44 @@ class _Home extends State<Home>{
             ),
           ),
         ),
-      ),
-
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            SizedBox(
-              height: 300,
-              child: DrawerHeader(
-                child: Column(
-                  children: [
-                    Progress(),
-                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
-                    Row(
-                      children: [
-                        Text('오늘도 좋은 하루 되세요'),
-                        Icon(Icons.tag_faces),
-                      ],
-                    ),
-                  ],
-                ),
-                decoration: BoxDecoration(
-                  color:Colors.yellow,
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 300,
+                child: DrawerHeader(
+                  child: Column(
+                    children: [
+                      Progress(),
+                      Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                      Row(
+                        children: [
+                          Text('오늘도 좋은 하루 되세요'),
+                          Icon(Icons.tag_faces),
+                        ],
+                      ),
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                    color:Colors.yellow,
+                  ),
                 ),
               ),
-            ),
-            DrawerList(text: '홈', icon: Icons.home, route:'/'),
-            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
-            DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle,route: '/addSchedule'),
-            DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded,route:'/addSchedule'),
-            DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural,route:'/recharge'),
-          ],
+              DrawerList(text: '홈', icon: Icons.home, route:'/'),
+              DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+              DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
+              DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
+              DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural, route:'/recharge'),
+            ],
+          ),
         ),
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        heroTag: 'addSchedule',
-        onPressed: () {
-          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
-        },
-      ),
-
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          heroTag: 'addSchedule',
+          onPressed: () {
+            Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
+          },
+        ),
         body: StreamBuilder<List<schModel>>(
             stream: streamSch(),
             builder: (context, snapshot){
@@ -318,7 +307,7 @@ class _Home extends State<Home>{
                 ],
               );
             }
-        )
+        ),
     );
   }
 
