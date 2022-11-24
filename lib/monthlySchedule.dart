@@ -14,7 +14,7 @@ class monthlySchedule extends StatefulWidget{
 class _monthlySchedule extends State<monthlySchedule>{
   CalendarFormat _calendarFormat = CalendarFormat.month;
   late dynamic _focusedDay;
-  late dynamic _selectedDay;
+  late dynamic _selectedDay = DateTime.now();
   late dynamic _selectedEvents;
   DateTime today = DateTime.now();
 
