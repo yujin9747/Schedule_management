@@ -47,9 +47,31 @@ class _Home extends State<Home>{
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            Text('data1'),
-            Text('data2'),
-            Text('data3'),
+            SizedBox(
+              height: 300,
+              child: DrawerHeader(
+                child: Column(
+                  children: [
+                    Progress(),
+                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                    Row(
+                      children: [
+                        Text('오늘도 좋은 하루 되세요'),
+                        Icon(Icons.tag_faces),
+                      ],
+                    ),
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  color:Colors.yellow,
+                ),
+              ),
+            ),
+            DrawerList(text: '홈', icon: Icons.home, route:'/'),
+            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle,route: '/addSchedule'),
+            DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded,route:'/addSchedule'),
+            DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural,route:'/recharge'),
           ],
         ),
       ),
@@ -58,10 +80,9 @@ class _Home extends State<Home>{
         child: Icon(Icons.add),
         heroTag: 'addSchedule',
         onPressed: () {
-          Navigator.pushNamed(context, '/addSchedule');
+          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
         },
       ),
-
       body: ListView(
         children: [
           Padding(
@@ -75,23 +96,8 @@ class _Home extends State<Home>{
               ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 18,),
-                    child: CircularPercentIndicator(
-                      radius: 95.0,
-                      lineWidth: 15.0,
-                      percent: 0.8,
-                      center: Text(
-                        "80%",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 40,
-                        ),
-                      ),
-                      progressColor: Colors.white,
-                    ),
-                  ),
+                  SizedBox(height: 9,),
+                  Progress(),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
@@ -161,3 +167,73 @@ class _Home extends State<Home>{
   }
 
 }
+
+class Progress extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _ProgressState();
+  }
+}
+
+class _ProgressState extends State<Progress>{
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 9, bottom: 9),
+      child: CircularPercentIndicator(
+        radius: 95.0,
+        lineWidth: 15.0,
+        percent: 0.8,
+        center: Text(
+          "80%",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 40,
+          ),
+        ),
+        progressColor: Colors.white,
+      ),
+    );
+  }
+}
+
+class DrawerList extends StatelessWidget{
+  late String text;
+  late IconData icon;
+  late String route;
+  DrawerList({required String text, required IconData icon, required String route}){
+    this.text = text;
+    this.icon = icon;
+    this.route = route;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Colors.grey[850],
+      ),
+      title: Text(text),
+      onTap: () {
+        print('${text} is clicked');
+        Navigator.pop(context);
+        if(route != '/') {
+          if(text == '오늘 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
+          else if(text == '내일 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
+          else Navigator.pushNamed(context, route);
+        }
+      },
+      trailing: Icon(Icons.keyboard_arrow_right),
+    );
+  }
+}
+
+class addScheduleArguments{
+  late String date;
+  addScheduleArguments(this.date);
+}
+
+
+
+
