@@ -301,7 +301,6 @@ class _Home extends State<Home>{
                 Text(sch[0].enddate),
                 Text(sch[0].check.toString()),
                 Text(sch[0].description),
-                Text(sch[1].id),
                 Text(sch.length.toString()),
                 const SizedBox(height: 30,),
               ],
