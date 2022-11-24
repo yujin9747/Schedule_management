@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+import 'Home.dart';
 
 class AddSchedule extends StatefulWidget{
   @override
@@ -20,10 +21,11 @@ class _AddSchedule extends State<AddSchedule>{
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as addScheduleArguments;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Add Schedule'),
+        title: Text(args.date),
       ),
       body: SingleChildScrollView(
         child: FormBuilder(
@@ -186,7 +188,7 @@ class _AddSchedule extends State<AddSchedule>{
                   }
                   return null;
                 },
-                initialValue: 'when_today',
+                initialValue: args.date == 'today' ? 'when_today': 'when_tomorrow',
               ),
               const SizedBox(height: 20,),
               FormBuilderDropdown(
