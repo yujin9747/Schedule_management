@@ -1,9 +1,3 @@
-/*
-Things to be done.
-
-1. Fixing pod install fail error.
-2. App bar title into specific form
- */
 
 import 'dart:developer';
 
@@ -47,281 +41,273 @@ class _Home extends State<Home>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(format.toString(), style: TextStyle(color: Colors.black, fontSize: 20,),),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-
-          leading: Builder( // menu icon
-            builder: (context) => IconButton(
-              icon: Icon(Icons.menu, color: Colors.black,),
-              onPressed: () => Scaffold.of(context).openDrawer(), // open drawer
-            ),
+      appBar: AppBar(
+        title: Text(format.toString(), style: TextStyle(color: Colors.black, fontSize: 20,),),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.black,),
+            onPressed: () => Scaffold.of(context).openDrawer(), // open drawer
           ),
         ),
-
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            SizedBox(
+              height: 300,
+              child: DrawerHeader(
+                child: Column(
+                  children: [
+                    Progress(),
+                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                    Row(
+                      children: [
+                        Text('오늘도 좋은 하루 되세요'),
+                        Icon(Icons.tag_faces),
+                      ],
+                    ),
+                  ],
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text('Menu', style: TextStyle(fontSize: 20,),),
+                  color:Colors.yellow,
                 ),
               ),
-              ListTile(
-                title: const Text('Item 1'),
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
-                },
-              ),
-              ListTile(
-                title: const Text('Item 2'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
-          ),
+            ),
+            DrawerList(text: '홈', icon: Icons.home, route:'/'),
+            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
+            DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
+            DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural, route:'/recharge'),
+          ],
         ),
-
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          heroTag: 'addSchedule',
-          backgroundColor: Colors.black,
-          onPressed: () {
-            Navigator.pushNamed(context, '/addSchedule');
-            print(format.toString());
-          },
-        ),
-
-        body: StreamBuilder<List<schModel>>(
-            stream: streamSch(),
-            builder: (context, snapshot){
-              List<schModel> sch = snapshot.data!;
-              return ListView(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                    child: Container(
-                      width: 50,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.purple,
-                      ),
-                      child: Column( // percentage
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 18,),
-                            child: CircularPercentIndicator(
-                              radius: 95.0,
-                              lineWidth: 15.0,
-                              percent: 0.8,
-                              center: Text(
-                                "80%",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 40,
-                                ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        heroTag: 'addSchedule',
+        onPressed: () {
+          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
+        },
+      ),
+      body: StreamBuilder<List<schModel>>(
+          stream: streamSch(),
+          builder: (context, snapshot){
+            List<schModel> sch = snapshot.data!;
+            return ListView(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                  child: Container(
+                    width: 50,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.purple,
+                    ),
+                    child: Column( // percentage
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 18,),
+                          child: CircularPercentIndicator(
+                            radius: 95.0,
+                            lineWidth: 15.0,
+                            percent: 0.8,
+                            center: Text(
+                              "80%",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 40,
                               ),
-                              progressColor: Colors.white,
                             ),
+                            progressColor: Colors.white,
                           ),
-                          Align( // text1
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 20, left: 20,),
-                              child: Text('data'),
-                            ),
+                        ),
+                        Align( // text1
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 20, left: 20,),
+                            child: Text('data'),
                           ),
-                          Align( // text2
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, left: 20,),
-                              child: Text("data"),
-                            ),
+                        ),
+                        Align( // text2
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10, left: 20,),
+                            child: Text("data"),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20,),
-                  Padding(
-                    padding: EdgeInsets.only(left: 37,),
-                    child: const Text("시간 순 일정", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Padding( // time line
-                    padding: EdgeInsets.only(left: 30,),
-                    child: Container(
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: sch.length,
-                        itemBuilder: (context, index){
-                          return IntrinsicHeight(
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 50,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(sch[index].starttime.toString()),
-                                      Text(sch[index].endtime.toString()),
-                                    ],
-                                  ),
-                                ),
-                                VerticalDivider(thickness: 2, width: 10, color: Colors.black38),
-                                Container(
-                                  height: 150,
-                                  width: 270,
-                                  child: Card(
-                                    child: Text(sch[index].id),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40,),
-                  Padding(
-                    padding: EdgeInsets.only(left: 37,),
-                    child: const Text("오늘 마감해야 하는 일", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
-                  ),
-                  Container(
+                ),
+                const SizedBox(height: 20,),
+                Padding(
+                  padding: EdgeInsets.only(left: 37,),
+                  child: const Text("시간 순 일정", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
+                ),
+                const SizedBox(height: 20,),
+                Padding( // time line
+                  padding: EdgeInsets.only(left: 30,),
+                  child: Container(
                     height: 200,
                     child: ListView.builder(
                       itemCount: sch.length,
                       itemBuilder: (context, index){
-                        return InkWell( // card 1
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                            child: Container(
-                              width: 50,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey.shade400,
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 400,
-                                    child: Row(
-                                      children: [
-                                       Padding(
-                                         padding: EdgeInsets.only(left: 10, right: 250, top: 5,),
-                                         child: Icon(Icons.book_rounded, color: Colors.white, size: 40,),
-                                       ),
-                                        Icon(Icons.more_vert),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10, right: 10,),
-                                        child: Text(sch[index].id),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          fillColor: MaterialStateProperty.resolveWith(getColor),
-                                          value: sch[index].check,
-                                          onChanged: (bool? value) { // check data을 수정할 수 있어야함
-                                            setState(() {
-                                              isChecked = value!;
-                                            });
-                                          },
-                                      ),
-                                    ),
+                        return IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 50,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(sch[index].starttime.toString()),
+                                    Text(sch[index].endtime.toString()),
                                   ],
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
+                              VerticalDivider(thickness: 2, width: 10, color: Colors.black38),
+                              Container(
+                                height: 150,
+                                width: 270,
+                                child: Card(
+                                  child: Text(sch[index].id),
+                                ),
+                              ),
+                            ],
                           ),
-                          onTap: (){
-                            Navigator.pushNamed(context, '/addSchedule');
-                          },
                         );
                       },
                     ),
                   ),
-                  const SizedBox(height: 20,),
-                  InkWell( // card 1
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                      child:
-                        Container(
-                          width: 50,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.pink.shade200,
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(),
-                              child: Text("오늘 마감해야하는 일들입니다!"),
+                ),
+                const SizedBox(height: 40,),
+                Padding(
+                  padding: EdgeInsets.only(left: 37,),
+                  child: const Text("오늘 마감해야 하는 일", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
+                ),
+                Container(
+                  height: 200,
+                  child: ListView.builder(
+                    itemCount: sch.length,
+                    itemBuilder: (context, index){
+                      return InkWell( // card 1
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                          child: Container(
+                            width: 50,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade400,
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 400,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 10, right: 250, top: 5,),
+                                        child: Icon(Icons.book_rounded, color: Colors.white, size: 40,),
+                                      ),
+                                      Icon(Icons.more_vert),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10, right: 10,),
+                                      child: Text(sch[index].id),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                                        value: sch[index].check,
+                                        onChanged: (bool? value) { // check data을 수정할 수 있어야함
+                                          setState(() {
+                                            isChecked = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                      ),
-                    ),
-                    onTap: (){
-                      Navigator.pushNamed(context, '/addSchedule');
+                        ),
+                        onTap: (){
+                          Navigator.pushNamed(context, '/addSchedule');
+                        },
+                      );
                     },
                   ),
-                  InkWell( // card 2
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                      child: Container(
-                        width: 50,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(),
-                            child: Text('쉼 추가하기'),
-                          ),
+                ),
+                const SizedBox(height: 20,),
+                InkWell( // card 1
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                    child:
+                    Container(
+                      width: 50,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.pink.shade200,
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(),
+                          child: Text("오늘 마감해야하는 일들입니다!"),
                         ),
                       ),
                     ),
-                    onTap: (){
-                      Navigator.pushNamed(context, '/recharge');
-                    },
                   ),
-                  const SizedBox(height: 100,),
-                  Text(sch[0].startdate),
-                  Text(sch[0].enddate),
-                  Text(sch[0].check.toString()),
-                  Text(sch[0].description),
-                  Text(sch[1].id),
-                  Text(sch.length.toString()),
-                  const SizedBox(height: 30,),
-                ],
-              );
-            }
-        )
+                  onTap: (){
+                    Navigator.pushNamed(context, '/addSchedule');
+                  },
+                ),
+                InkWell( // card 2
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                    child: Container(
+                      width: 50,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blue,
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(),
+                          child: Text('쉼 추가하기'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: (){
+                    Navigator.pushNamed(context, '/recharge');
+                  },
+                ),
+                const SizedBox(height: 100,),
+                Text(sch[0].startdate),
+                Text(sch[0].enddate),
+                Text(sch[0].check.toString()),
+                Text(sch[0].description),
+                Text(sch[1].id),
+                Text(sch.length.toString()),
+                const SizedBox(height: 30,),
+              ],
+            );
+          }
+      ),
     );
   }
 
@@ -349,3 +335,68 @@ class _Home extends State<Home>{
 
 }
 
+class Progress extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _ProgressState();
+  }
+}
+
+class _ProgressState extends State<Progress>{
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 9, bottom: 9),
+      child: CircularPercentIndicator(
+        radius: 95.0,
+        lineWidth: 15.0,
+        percent: 0.8,
+        center: Text(
+          "80%",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 40,
+          ),
+        ),
+        progressColor: Colors.white,
+      ),
+    );
+  }
+}
+
+class DrawerList extends StatelessWidget{
+  late String text;
+  late IconData icon;
+  late String route;
+  DrawerList({required String text, required IconData icon, required String route}){
+    this.text = text;
+    this.icon = icon;
+    this.route = route;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Colors.grey[850],
+      ),
+      title: Text(text),
+      onTap: () {
+        print('${text} is clicked');
+        Navigator.pop(context);
+        if(route != '/') {
+          if(text == '오늘 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
+          else if(text == '내일 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
+          else Navigator.pushNamed(context, route);
+        }
+      },
+      trailing: Icon(Icons.keyboard_arrow_right),
+    );
+  }
+}
+
+class addScheduleArguments{
+  late String date;
+  addScheduleArguments(this.date);
+}
