@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -18,6 +19,18 @@ class _AddSchedule extends State<AddSchedule>{
   late bool timeSet = false;
   FocusNode titleFocusNode = FocusNode();
   FocusNode memoFocusNode = FocusNode();
+  late String title;
+  late String? memo;
+  late String? startDate;
+  late String? dueDate;
+  late bool timelined;
+  late String? startTime;
+  late String? endTime;
+  late int? importance;
+  late String? dayToDo;
+  late String? when;
+  late String? where;
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +129,7 @@ class _AddSchedule extends State<AddSchedule>{
               ),
               timeSet
                   ? FormBuilderDateTimePicker(
+                validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'start_time',
                 inputType: InputType.time,
                 decoration: InputDecoration(
@@ -132,6 +146,7 @@ class _AddSchedule extends State<AddSchedule>{
                   : Container(),
               timeSet
                   ? FormBuilderDateTimePicker(
+                validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'end_time',
                 inputType: InputType.time,
                 decoration: InputDecoration(
@@ -291,21 +306,20 @@ class _AddSchedule extends State<AddSchedule>{
                 onPressed: () {
                   // Todo : upload to Database
                   //** Test Dode : create -> 테스트 성공 **//
-                  final ref = FirebaseFirestore.instance.collection('schedules').doc('title');
+                  final uid = FirebaseAuth.instance.currentUser?.uid;
+                  final ref = FirebaseFirestore.instance.collection('schedules/${uid}/${when}').doc('${title}');
                   ref.set({
-                    "title" : "title test",
-                    "memo" : "memo test",
-                    "startDate" : DateTime.now(),
-                    "dueDate" : DateTime.now(),
-                    "timelined" : true,
-                    "startTime" : DateTime.now().hour,
-                    "endTime" : DateTime.now().hour,
-                    "importance" : 9,
-                    "dayToDo" : DateTime.now(),
-                    "where" : "where test",
+                    "title" : title,
+                    "memo" : memo,
+                    "startDate" : startDate,
+                    "dueDate" : dueDate,
+                    "timelined" : timelined,
+                    "startTime" : startTime,
+                    "endTime" : endTime,
+                    "importance" : importance,
+                    "dayToDo" : when,
+                    "where" : where,
                   });
-                  //** Test Code **//
-
                   final snackbar = SnackBar(content: Text("Success : 일정이 추가되었습니다"),);
                   ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   Navigator.pop(context);
@@ -367,8 +381,50 @@ class _AddSchedule extends State<AddSchedule>{
       _formkey.currentState?.save();
 
       // Get values from one field
-      final title = _formkey.currentState?.fields["title"]?.value;
-      final memo = _formkey.currentState?.fields["memo"]?.value;
+      title = _formkey.currentState?.fields["title"]?.value;
+      memo = _formkey.currentState?.fields["memo"]?.value;
+      if(_formkey.currentState?.fields["date_range"] != null){
+        final dateRange = _formkey.currentState?.fields["date_range"]?.value.toString();
+        //String start = dateRange?.substring(0,10);
+        // startDate = DateTime(int.parse(dateRange.substring(0,4)), dateRange?.substring(5, 7), dateRange?.substring(8, 10));
+        // dueDate = DateTime(dateRange?.substring(26,30), dateRange?.substring(31, 33), dateRange?.substring(34, 36));
+        startDate = dateRange?.substring(0,10);
+        dueDate = dateRange?.substring(26, 37);
+      }
+      if(_formkey.currentState?.fields['timeSet']?.value){
+        timelined = true;
+        startTime = _formkey.currentState?.fields['start_time']?.value.toString().substring(11, 16);
+        endTime = _formkey.currentState?.fields['end_time']?.value.toString().substring(11, 16);
+      }
+      else timelined = false;
+      importance = _formkey.currentState?.fields['rating']?.value.round();
+      dayToDo = _formkey.currentState?.fields['when']?.value;
+      where = _formkey.currentState?.fields['where']?.value;
+
+      if(dayToDo == 'when_tomorrow'){
+        when = DateTime.now().add(Duration(days:1)).toString().substring(0, 10);
+      }
+      else if(dayToDo == 'when_today'){
+        when = DateTime.now().toString().substring(0, 10);
+      }
+      else if(dayToDo == 'when_later'){
+
+      }
+      else if(dayToDo == 'when_userSelect'){
+        when = _formkey.currentState?.fields['when_selectedDate']?.value.toString().substring(0, 10);
+      }
+
+      // 입력값 확인
+      print("title: ${title}");
+      print("memo: ${memo}");
+      print("startDate: ${startDate}");
+      print("dueDate: ${dueDate}");
+      print("timelined: ${timelined}");
+      print("startTime: ${startTime}");
+      print("endTime: ${endTime}");
+      print("importance: ${importance}");
+      print("when: ${when}");
+      print("where: ${where}");
 
       // Get whole form data
       final formData = _formkey.currentState?.value;
