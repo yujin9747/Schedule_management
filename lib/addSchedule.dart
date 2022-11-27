@@ -313,7 +313,7 @@ class _AddSchedule extends State<AddSchedule>{
                   // Todo : upload to Database
                   //** Test Dode : create -> 테스트 성공 **//
                   final uid = FirebaseAuth.instance.currentUser?.uid;
-                  final ref = FirebaseFirestore.instance.collection('schedules/$uid/$when').doc(title);
+                  final ref = FirebaseFirestore.instance.collection('schedules/${uid}/${when}').doc('${title}');
                   ref.set({
                     "title" : title,
                     "memo" : memo,
