@@ -1,35 +1,62 @@
 class schModel{
-  final String id;
-  final String startdate;
-  final String enddate;
-  final String description;
-  final bool check;
-  final int starttime;
-  final int endtime;
+  final String title;
+  final String memo;
+  final String startDate;
+  final bool timeLined;
+  final String startTime;
+  final String endTime;
+  final int importance;
+  final String dateToDo;
+  final String where;
+  final String dueDate;
 
-  schModel({this.id = '', this.enddate = '', this.startdate = '', this.description = '', this.check = false, this.starttime = 0, this.endtime = 0});
+  final bool check;
+
+  schModel({
+    this.title = '',
+    this.memo = '',
+    this.startDate = '',
+    this.dateToDo = '',
+    this.where = '',
+    this.timeLined = false,
+
+    this.startTime = '',
+    this.endTime = '',
+    this.importance = 0,
+    this.check = false,
+    this.dueDate = '',
+  });
 
   factory schModel.fromMap({required String id, required Map<String,dynamic> map}){
 
     return schModel(
-      id : id,
-      description : map['description']??'',
-      enddate: map['enddate']??'',
-      startdate : map['startdate']??'',
+      title: map['title']??'',
+      memo: map['memo']??'',
+      startDate: map['startDate']??'',
+      dateToDo: map['dateToDo']??'',
+      where: map['where']??'',
+      timeLined: map['timeLined']??false,
+      startTime: map['startTime']??'',
+      endTime: map['endTime']??'',
+      importance: map['importance']??0,
       check: map['check']??false,
-      starttime:  map['starttime']??0,
-      endtime:  map['endtime']??0,
+      dueDate: map['dueDate']??'',
     );
   }
 
   Map<String, dynamic> toMap(){
     Map<String, dynamic> data = {};
-    data['enddate'] = enddate;
-    data['startdate'] = startdate;
-    data['description'] = description;
+    data['title'] = title;
+    data['memo'] = memo;
+    data['startDate'] = startDate;
+    data['dateToDo'] = dateToDo;
+    data['where'] = where;
+    data['timeLine'] = timeLined;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    data['importance'] = importance;
     data['check'] = check;
-    data['starttime'] = starttime;
-    data['endtime'] = endtime;
+    data['dueDate'] = dueDate;
     return data;
   }
 }

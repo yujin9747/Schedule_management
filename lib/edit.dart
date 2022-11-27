@@ -5,18 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
-import 'Home.dart';
+import 'package:scheduling/schModel.dart';
 
-class AddSchedule extends StatefulWidget{
+class Edit extends StatefulWidget {
+  final schModel sch;
+  const Edit(this.sch, {Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() {
-    return _AddSchedule();
-  }
+  State<Edit> createState() => _EditState();
 }
 
-class _AddSchedule extends State<AddSchedule>{
+class _EditState extends State<Edit> {
   final _formkey = GlobalKey<FormBuilderState>();
-  late bool timeSet = false;
+  late bool timeSet;
+
   FocusNode titleFocusNode = FocusNode();
   FocusNode memoFocusNode = FocusNode();
   late String title;
@@ -32,17 +34,33 @@ class _AddSchedule extends State<AddSchedule>{
   late String? where;
 
 
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as addScheduleArguments;
+    DateTime? dtStTime = DateFormat("hh:mm").parse(widget.sch.startTime);
+    DateTime? dtEdTime = DateFormat("hh:mm").parse(widget.sch.endTime);
+
+    timeSet = widget.sch.timeLined;
+
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 80,
+        title: const Text('Edit', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(args.date),
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: FormBuilder(
           key: _formkey,
+          onChanged: (){print("Form has been changed");},
+          autovalidateMode: AutovalidateMode.disabled,
           child: Column(
             children: [
               const SizedBox(height: 20,),
@@ -50,6 +68,7 @@ class _AddSchedule extends State<AddSchedule>{
                 autofocus: true,
                 focusNode: titleFocusNode,
                 name: 'title',
+                initialValue: widget.sch.title,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(color: Colors.grey[800]),
                   hintText: "Title",
@@ -76,6 +95,7 @@ class _AddSchedule extends State<AddSchedule>{
               FormBuilderTextField(
                 name: 'memo',
                 focusNode: memoFocusNode,
+                initialValue: widget.sch.memo,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(color: Colors.grey[800]),
                   hintText: "memo",
@@ -98,6 +118,7 @@ class _AddSchedule extends State<AddSchedule>{
                 firstDate: DateTime(2022),
                 lastDate: DateTime(2030),
                 format: DateFormat('yyyy-MM-dd'), // 2022-08-01
+                //initial value를 넣어야함!!! => start랑 end를 가지고 date range 설정해서 initial value로 넣어주기
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon : Icon(Icons.clear),
@@ -110,6 +131,7 @@ class _AddSchedule extends State<AddSchedule>{
               FormBuilderCheckbox(
                 name: 'timeSet',
                 title: Text('시간 설정'),
+                initialValue: timeSet,
                 onChanged: (value){
                   if(value == true){
                     setState(() {
@@ -132,6 +154,7 @@ class _AddSchedule extends State<AddSchedule>{
                 validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'start_time',
                 inputType: InputType.time,
+                initialValue: dtStTime,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon : Icon(Icons.clear),
@@ -148,6 +171,7 @@ class _AddSchedule extends State<AddSchedule>{
                   ? FormBuilderDateTimePicker(
                 validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'end_time',
+                initialValue: dtEdTime,
                 inputType: InputType.time,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
@@ -163,7 +187,7 @@ class _AddSchedule extends State<AddSchedule>{
                   : Container(),
               FormBuilderSlider(
                 name: "rating",
-                initialValue: 0,
+                initialValue: widget.sch.importance.toDouble(),
                 min: 0,
                 max: 10,
                 divisions: 10,
@@ -203,11 +227,11 @@ class _AddSchedule extends State<AddSchedule>{
                   }
                   return null;
                 },
-                initialValue: args.date == 'today' ? 'when_today': 'when_tomorrow',
+                initialValue: 'when_today',
               ),
               const SizedBox(height: 20,),
               FormBuilderDropdown(
-                initialValue: '집',
+                initialValue: widget.sch.where,
                 name: 'where',
                 items: [
                   DropdownMenuItem(
@@ -262,10 +286,6 @@ class _AddSchedule extends State<AddSchedule>{
               const SizedBox(height: 20,),
             ],
           ),
-          onChanged: (){print("Form has been changed");},
-          autovalidateMode: AutovalidateMode.disabled,
-          initialValue: {
-          },
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -281,7 +301,6 @@ class _AddSchedule extends State<AddSchedule>{
     );
   }
 
-  // show Dialog before adding schedule to Database
   void showConfirmDialog() {
     showDialog(
         context: context,
@@ -313,8 +332,8 @@ class _AddSchedule extends State<AddSchedule>{
                   // Todo : upload to Database
                   //** Test Dode : create -> 테스트 성공 **//
                   final uid = FirebaseAuth.instance.currentUser?.uid;
-                  final ref = FirebaseFirestore.instance.collection('schedules/${uid}/${when}').doc('${title}');
-                  ref.set({
+                  final ref = FirebaseFirestore.instance.collection('schedules/$uid/$when').doc(title);
+                  ref.update({
                     "title" : title,
                     "memo" : memo,
                     "startDate" : startDate,
@@ -375,7 +394,6 @@ class _AddSchedule extends State<AddSchedule>{
         }
     );
   }
-
 
   // action after submit button is clicked
   void submitAction() {

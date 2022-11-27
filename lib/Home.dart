@@ -9,11 +9,13 @@ import 'package:jiffy/jiffy.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:scheduling/Recharge.dart';
 import 'package:scheduling/schModel.dart';
+import 'detail.dart';
 import 'timeline.dart';
 
 var now = DateTime.now();
 
 String format = DateFormat('M/d EEEE').format(now).toString();
+String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
 
 
 class Home extends StatefulWidget{
@@ -25,6 +27,7 @@ class Home extends StatefulWidget{
 
 class _Home extends State<Home>{
   bool isChecked = false;
+  final uid = FirebaseAuth.instance.currentUser?.uid;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -94,218 +97,245 @@ class _Home extends State<Home>{
       body: StreamBuilder<List<schModel>>(
           stream: streamSch(),
           builder: (context, snapshot){
-            List<schModel> sch = snapshot.data!;
-            return ListView(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                  child: Container(
-                    width: 50,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.purple,
-                    ),
-                    child: Column( // percentage
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 18,),
-                          child: CircularPercentIndicator(
-                            radius: 95.0,
-                            lineWidth: 15.0,
-                            percent: 0.8,
-                            center: Text(
-                              "80%",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 40,
+            if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
+              return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('오류가 발생했습니다.'),
+              );
+            } else {
+              List<schModel> sch = snapshot.data!;
+              return ListView(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                    child: Container(
+                      width: 50,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.purple,
+                      ),
+                      child: Column( // percentage
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 18,),
+                            child: CircularPercentIndicator(
+                              radius: 95.0,
+                              lineWidth: 15.0,
+                              percent: 0.8,
+                              center: Text(
+                                "80%",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 40,
+                                ),
                               ),
+                              progressColor: Colors.white,
                             ),
-                            progressColor: Colors.white,
                           ),
-                        ),
-                        Align( // text1
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 20, left: 20,),
-                            child: Text('data'),
+                          Align( // text1
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 20, left: 20,),
+                              child: Text('data'),
+                            ),
                           ),
-                        ),
-                        Align( // text2
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 10, left: 20,),
-                            child: Text("data"),
+                          Align( // text2
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10, left: 20,),
+                              child: Text("data"),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20,),
-                Padding(
-                  padding: EdgeInsets.only(left: 37,),
-                  child: const Text("시간 순 일정", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
-                ),
-                const SizedBox(height: 20,),
-                Padding( // time line
-                  padding: EdgeInsets.only(left: 30,),
-                  child: Container(
+                  const SizedBox(height: 20,),
+                  Padding(
+                    padding: EdgeInsets.only(left: 37,),
+                    child: const Text("시간 순 일정", style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),),
+                  ),
+                  const SizedBox(height: 20,),
+                  Padding( // time line
+                    padding: EdgeInsets.only(left: 30,),
+                    child: Container(
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: sch.length,
+                        itemBuilder: (context, index) {
+                          return IntrinsicHeight(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(sch[index].startTime),
+                                      Text(sch[index].endTime),
+                                    ],
+                                  ),
+                                ),
+                                VerticalDivider(thickness: 2,
+                                    width: 10,
+                                    color: Colors.black38),
+                                Container(
+                                  height: 150,
+                                  width: 270,
+                                  child: Card(
+                                    child: Text(sch[index].title),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40,),
+                  Padding(
+                    padding: EdgeInsets.only(left: 37,),
+                    child: const Text("오늘 마감해야 하는 일", style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),),
+                  ),
+                  Container(
                     height: 200,
                     child: ListView.builder(
                       itemCount: sch.length,
-                      itemBuilder: (context, index){
-                        return IntrinsicHeight(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(sch[index].starttime.toString()),
-                                    Text(sch[index].endtime.toString()),
-                                  ],
-                                ),
+                      itemBuilder: (context, index) {
+                        return InkWell( // card 1
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: 30, right: 30, top: 15,),
+                            child: Container(
+                              width: 50,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey.shade400,
                               ),
-                              VerticalDivider(thickness: 2, width: 10, color: Colors.black38),
-                              Container(
-                                height: 150,
-                                width: 270,
-                                child: Card(
-                                  child: Text(sch[index].id),
-                                ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 400,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 10, right: 230, top: 5,),
+                                          child: Icon(Icons.book_rounded,
+                                            color: Colors.white, size: 40,),
+                                        ),
+                                        IconButton(
+                                            onPressed:(){
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Detail(sch[index]),
+                                                ),
+                                              );
+                                            },
+                                            icon: Icon(Icons.more_vert,),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 10, right: 10,),
+                                        child: Text(sch[index].title),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Checkbox(
+                                          checkColor: Colors.white,
+                                          fillColor: MaterialStateProperty
+                                              .resolveWith(getColor),
+                                          value: sch[index].check,
+                                          onChanged: (bool? value) {
+                                            // check data을 수정할 수 있어야함
+                                            setState(() {
+                                              isChecked = value!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/addSchedule');
+                          },
                         );
                       },
                     ),
                   ),
-                ),
-                const SizedBox(height: 40,),
-                Padding(
-                  padding: EdgeInsets.only(left: 37,),
-                  child: const Text("오늘 마감해야 하는 일", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), ),
-                ),
-                Container(
-                  height: 200,
-                  child: ListView.builder(
-                    itemCount: sch.length,
-                    itemBuilder: (context, index){
-                      return InkWell( // card 1
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                          child: Container(
-                            width: 50,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey.shade400,
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 400,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10, right: 250, top: 5,),
-                                        child: Icon(Icons.book_rounded, color: Colors.white, size: 40,),
-                                      ),
-                                      Icon(Icons.more_vert),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 10, right: 10,),
-                                      child: Text(sch[index].id),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Checkbox(
-                                        checkColor: Colors.white,
-                                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                                        value: sch[index].check,
-                                        onChanged: (bool? value) { // check data을 수정할 수 있어야함
-                                          setState(() {
-                                            isChecked = value!;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                  const SizedBox(height: 20,),
+                  InkWell( // card 1
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                      child:
+                      Container(
+                        width: 50,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.pink.shade200,
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(),
+                            child: Text("오늘 마감해야하는 일들입니다!"),
                           ),
                         ),
-                        onTap: (){
-                          Navigator.pushNamed(context, '/addSchedule');
-                        },
-                      );
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/addSchedule');
                     },
                   ),
-                ),
-                const SizedBox(height: 20,),
-                InkWell( // card 1
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                    child:
-                    Container(
-                      width: 50,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.pink.shade200,
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(),
-                          child: Text("오늘 마감해야하는 일들입니다!"),
+                  InkWell( // card 2
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                      child: Container(
+                        width: 50,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blue,
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(),
+                            child: Text('쉼 추가하기'),
+                          ),
                         ),
                       ),
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/recharge');
+                    },
                   ),
-                  onTap: (){
-                    Navigator.pushNamed(context, '/addSchedule');
-                  },
-                ),
-                InkWell( // card 2
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                    child: Container(
-                      width: 50,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(),
-                          child: Text('쉼 추가하기'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  onTap: (){
-                    Navigator.pushNamed(context, '/recharge');
-                  },
-                ),
-                const SizedBox(height: 100,),
-                Text(sch[0].startdate),
-                Text(sch[0].enddate),
-                Text(sch[0].check.toString()),
-                Text(sch[0].description),
-                Text(sch[1].id),
-                Text(sch.length.toString()),
-                const SizedBox(height: 30,),
-              ],
-            );
+                  // const SizedBox(height: 100,),
+                  // Text(sch.length.toString()),
+                  // Text(sch[0].dateToDo),
+                  // Text(sch[0].check.toString()),
+                  // Text(sch[0].memo),
+                  // Text(sch.length.toString()),
+                  const SizedBox(height: 30,),
+                ],
+              );
+            }
           }
       ),
     );
@@ -313,15 +343,15 @@ class _Home extends State<Home>{
 
   Stream<List<schModel>> streamSch(){
     try{
-      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('test/user/today').snapshots();
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').snapshots();
 
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
-        querySnapshot.docs.forEach((element){
+        querySnapshot.docs.forEach((element) {
           sch.add(
               schModel.fromMap(
-                  id : element.id,
-                  map : element.data() as Map<String, dynamic>
+                  id:element.id,
+                  map:element.data() as Map<String, dynamic>
               )
           );
         });
