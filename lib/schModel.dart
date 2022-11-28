@@ -8,7 +8,7 @@ class schModel{
   final String startTime;
   final String endTime;
   final int importance;
-  final String dateToDo;
+  final String dayToDo;
   final String where;
   final String dueDate;
 
@@ -20,7 +20,7 @@ class schModel{
     this.title = '',
     this.memo = '',
     this.startDate = '',
-    this.dateToDo = '',
+    this.dayToDo = '',
     this.where = '',
     this.timeLined = false,
 
@@ -37,7 +37,7 @@ class schModel{
       title: map['title']??'',
       memo: map['memo']??'',
       startDate: map['startDate']??'',
-      dateToDo: map['dateToDo']??'',
+      dayToDo: map['dayToDo']??'',
       where: map['where']??'',
       timeLined: map['timeLined']??false,
       startTime: map['startTime']??'',
@@ -53,7 +53,7 @@ class schModel{
     data['title'] = title;
     data['memo'] = memo;
     data['startDate'] = startDate;
-    data['dateToDo'] = dateToDo;
+    data['dayToDo'] = dayToDo;
     data['where'] = where;
     data['timeLine'] = timeLined;
     data['startTime'] = startTime;

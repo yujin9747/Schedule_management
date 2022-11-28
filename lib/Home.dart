@@ -295,7 +295,7 @@ class _Home extends State<Home>{
                       ),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/addSchedule');
+                      print(uid);
                     },
                   ),
                   InkWell( // card 2
@@ -322,7 +322,7 @@ class _Home extends State<Home>{
                   ),
                   // const SizedBox(height: 100,),
                   // Text(sch.length.toString()),
-                  // Text(sch[0].dateToDo),
+                  Text(sch[0].dayToDo),
                   // Text(sch[0].check.toString()),
                   // Text(sch[0].memo),
                   // Text(sch.length.toString()),
