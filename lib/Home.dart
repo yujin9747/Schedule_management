@@ -84,6 +84,7 @@ class _Home extends State<Home>{
             DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
             DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
+            DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
             DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural, route:'/recharge'),
           ],
         ),
