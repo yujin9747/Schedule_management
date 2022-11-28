@@ -74,6 +74,9 @@ class _AddSchedule extends State<AddSchedule>{
               ),
               const SizedBox(height: 20,),
               FormBuilderTextField(
+                keyboardType: TextInputType.multiline,
+                minLines: 1,//Normal textInputField will be displayed
+                maxLines: 100,// when user presses enter it will adapt to it
                 name: 'memo',
                 focusNode: memoFocusNode,
                 decoration: InputDecoration(
@@ -303,7 +306,10 @@ class _AddSchedule extends State<AddSchedule>{
               children: <Widget>[
                 Text("일정이 맞는지 확인해주세요."),
                 Text('title      : $title'),
-                Text('memo       : $memo'),
+                Text(
+                  'memo       : $memo',
+                  overflow: TextOverflow.ellipsis,
+                ),
                 Text('start date : $startDate'),
                 Text('due date   : $dueDate'),
                 timelined ? Text('start time : $startTime') : Container(),

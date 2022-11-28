@@ -61,12 +61,12 @@ class _Home extends State<Home>{
         child: ListView(
           children: <Widget>[
             SizedBox(
-              height: 300,
+              height: 330,
               child: DrawerHeader(
                 child: Column(
                   children: [
                     Progress(length),
-                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                    Text('$uid님 ${now.toString().substring(0, 11)} 일정 ${((finishedCount/length)*100).round()}% 진행중입니다.'),
                     Row(
                       children: [
                         Text('오늘도 좋은 하루 되세요'),
@@ -110,29 +110,30 @@ class _Home extends State<Home>{
               return ListView(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
                     child: Container(
                       width: 50,
                       height: 300,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.purple,
+                        color: Colors.purpleAccent,
                       ),
                       child: Column( // percentage
                         children: [
+                          const SizedBox(height: 10,),
                           Progress(sch.length),
                           Align( // text1
                             alignment: Alignment.bottomLeft,
                             child: Padding(
                               padding: EdgeInsets.only(top: 20, left: 20,),
-                              child: Text('data'),
+                              child: Text('${((finishedCount/length)*100).round()}% 진행중이에요.'),
                             ),
                           ),
                           Align( // text2
                             alignment: Alignment.bottomLeft,
                             child: Padding(
                               padding: EdgeInsets.only(top: 10, left: 20,),
-                              child: Text("data"),
+                              child: Text("${sch.length} 중에 ${finishedCount} 개 완료"),
                             ),
                           ),
                         ],
@@ -171,10 +172,45 @@ class _Home extends State<Home>{
                                     color: Colors.black38),
                                 InkWell(
                                   child: Container(
-                                    height: 150,
+                                    height: 120,
                                     width: 270,
                                     child: Card(
-                                      child: Text(sch[index].title),
+                                      child:Padding(
+                                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  sch[index].title,
+                                                  style: TextStyle(fontSize: 25),
+                                                ),
+                                                Expanded(child: Container()),
+                                                IconButton(
+                                                  onPressed: (){
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => Detail(sch[index]),
+                                                      ),
+                                                    );
+                                                  },
+                                                  icon: Icon(Icons.more_vert),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              sch[index].memo.split('\n').first,  // 여러줄일 경우 overflow.elipsis가 해결해주지 못하기 때문에 홈에서는 간단히 첫 줄만 표기
+                                              style: TextStyle(fontSize: 14),
+                                              overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
+                                            ),
+                                            const SizedBox(height: 5,),
+                                            Text("장소 : ${sch[index].where}"),
+                                            //Text(sch[index].title),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   onTap:(){
@@ -199,12 +235,13 @@ class _Home extends State<Home>{
                     child: const Text("오늘 마감해야 하는 일", style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.bold),),
                   ),
+                  const SizedBox(height: 10,),
                   Container(
-                    height: 200,
+                    height: 250,
                     child: ListView.builder(
                       itemCount: sch.length,
                       itemBuilder: (context, index) {
-                        return sch[index].timeLined == false ? InkWell( // card 1
+                        return sch[index].timeLined == false && sch[index].dueDate == now.toString().substring(0, 11)? InkWell( // card 1
                           child: Padding(
                             padding: EdgeInsets.only(
                               left: 30, right: 30, top: 15,),
@@ -245,27 +282,109 @@ class _Home extends State<Home>{
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(
-                                          left: 10, right: 10,),
+                                          left: 20,),
                                         child: Text(sch[index].title),
                                       ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          fillColor: MaterialStateProperty
-                                              .resolveWith(getColor),
-                                          value: sch[index].check,
-                                          onChanged: (bool? value) {
-                                            // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
-                                            // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
-                                            print('schedules/$uid/$dateformat');
-                                            final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
-                                            docRef.update({
-                                              'check': value,
-                                            });
-                                          },
-                                        ),
+                                      Expanded(child: Container(),),
+                                      Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor: MaterialStateProperty
+                                            .resolveWith(getColor),
+                                        value: sch[index].check,
+                                        onChanged: (bool? value) {
+                                          // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                          // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                          print('schedules/$uid/$dateformat');
+                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
+                                          docRef.update({
+                                            'check': value,
+                                          });
+                                        },
                                       ),
+                                      const SizedBox(width : 5),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ) : Container();
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 40,),
+                  Padding(
+                    padding: EdgeInsets.only(left: 37,),
+                    child: const Text("오늘 마감이 아닌 일정", style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),),
+                  ),
+                  const SizedBox(height: 10,),
+                  Container(
+                    height: 250,
+                    child: ListView.builder(
+                      itemCount: sch.length,
+                      itemBuilder: (context, index) {
+                        return sch[index].timeLined == false && sch[index].dueDate != now.toString().substring(0, 11)? InkWell( // card 1
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: 30, right: 30, top: 15,),
+                            child: Container(
+                              width: 50,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey.shade400,
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 400,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 10, right: 230, top: 5,),
+                                          child: Icon(Icons.book_rounded,
+                                            color: Colors.white, size: 40,),
+                                        ),
+                                        IconButton(
+                                          onPressed:(){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Detail(sch[index]),
+                                              ),
+                                            );
+                                          },
+                                          icon: Icon(Icons.more_vert,),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 20,),
+                                        child: Text(sch[index].title),
+                                      ),
+                                      Expanded(child: Container(),),
+                                      Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor: MaterialStateProperty
+                                            .resolveWith(getColor),
+                                        value: sch[index].check,
+                                        onChanged: (bool? value) {
+                                          // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                          // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                          print('schedules/$uid/$dateformat');
+                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
+                                          docRef.update({
+                                            'check': value,
+                                          });
+                                        },
+                                      ),
+                                      const SizedBox(width : 5),
                                     ],
                                   ),
                                 ],
@@ -322,12 +441,6 @@ class _Home extends State<Home>{
                       Navigator.pushNamed(context, '/recharge');
                     },
                   ),
-                  // const SizedBox(height: 100,),
-                  // Text(sch.length.toString()),
-                  Text(sch[0].dayToDo),
-                  // Text(sch[0].check.toString()),
-                  // Text(sch[0].memo),
-                  // Text(sch.length.toString()),
                   const SizedBox(height: 30,),
                 ],
               );
@@ -388,7 +501,7 @@ class _ProgressState extends State<Progress>{
       child: CircularPercentIndicator(
         radius: 95.0,
         lineWidth: 15.0,
-        percent: 0.8,
+        percent: finishedCount/length,
         center: Text(
           "${((finishedCount/length)*100).round()}%",
           style: TextStyle(
