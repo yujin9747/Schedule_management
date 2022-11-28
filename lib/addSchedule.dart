@@ -424,7 +424,7 @@ class _AddSchedule extends State<AddSchedule>{
         startDate = dateRange?.substring(0,10);
         dueDate = dateRange?.substring(26, 37);
       }
-      if(_formkey.currentState?.fields['timeSet']?.value){
+      if(_formkey.currentState?.fields['timeSet']?.value != null){
         timelined = true;
         startTime = _formkey.currentState?.fields['start_time']?.value.toString().substring(11, 16);
         endTime = _formkey.currentState?.fields['end_time']?.value.toString().substring(11, 16);
