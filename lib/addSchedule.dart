@@ -327,7 +327,7 @@ class _AddSchedule extends State<AddSchedule>{
                   //** Test Dode : create -> 테스트 성공 **//
                   final uid = FirebaseAuth.instance.currentUser?.uid;
                   final ref = FirebaseFirestore.instance.collection('schedules/${uid}/${when}').doc('${title}');
-                  timelined ? ref.set({
+                  timelined != null && timelined == true? ref.set({
                     "title" : title,
                     "memo" : memo,
                     "startDate" : startDate,
@@ -346,7 +346,7 @@ class _AddSchedule extends State<AddSchedule>{
                     "startDate" : startDate,
                     "dueDate" : dueDate,
                     "timelined" : timelined,
-                    // "startTime" : startTime,
+                    "startTime" : startTime,
                     // "endTime" : endTime,
                     "importance" : importance,
                     "dayToDo" : when,
@@ -424,51 +424,55 @@ class _AddSchedule extends State<AddSchedule>{
         startDate = dateRange?.substring(0,10);
         dueDate = dateRange?.substring(26, 37);
       }
-      if(_formkey.currentState?.fields['timeSet']?.value){
+      if(_formkey.currentState?.fields['timeSet']?.value != null){
         timelined = true;
         startTime = _formkey.currentState?.fields['start_time']?.value.toString().substring(11, 16);
         endTime = _formkey.currentState?.fields['end_time']?.value.toString().substring(11, 16);
       }
-      else timelined = false;
-      importance = _formkey.currentState?.fields['rating']?.value.round();
-      dayToDo = _formkey.currentState?.fields['when']?.value;
-      where = _formkey.currentState?.fields['where']?.value;
-
-      if(dayToDo == 'when_tomorrow'){
-        when = DateTime.now().add(Duration(days:1)).toString().substring(0, 10);
+      else {
+        timelined = false;
+        startTime = "24:00";
       }
-      else if(dayToDo == 'when_today'){
-        when = DateTime.now().toString().substring(0, 10);
+        importance = _formkey.currentState?.fields['rating']?.value.round();
+        dayToDo = _formkey.currentState?.fields['when']?.value;
+        where = _formkey.currentState?.fields['where']?.value;
+
+        if(dayToDo == 'when_tomorrow'){
+          when = DateTime.now().add(Duration(days:1)).toString().substring(0, 10);
+        }
+        else if(dayToDo == 'when_today'){
+          when = DateTime.now().toString().substring(0, 10);
+        }
+        else if(dayToDo == 'when_later'){
+
+        }
+        else if(dayToDo == 'when_userSelect'){
+          when = _formkey.currentState?.fields['when_selectedDate']?.value.toString().substring(0, 10);
+        }
+
+        // 입력값 확인
+        print("title: ${title}");
+        print("memo: ${memo}");
+        print("startDate: ${startDate}");
+        print("dueDate: ${dueDate}");
+        print("timelined: ${timelined}");
+        if(timelined){
+          print("startTime: ${startTime}");
+          print("endTime: ${endTime}");
+        }
+        print("importance: ${importance}");
+        print("when: ${when}");
+        print("where: ${where}");
+
+        // Get whole form data
+        final formData = _formkey.currentState?.value;
+
+        // Unfocus
+        FocusScope.of(context).unfocus();
+
+        // Show Dialog
+        showConfirmDialog();
       }
-      else if(dayToDo == 'when_later'){
-
-      }
-      else if(dayToDo == 'when_userSelect'){
-        when = _formkey.currentState?.fields['when_selectedDate']?.value.toString().substring(0, 10);
-      }
-
-      // 입력값 확인
-      print("title: ${title}");
-      print("memo: ${memo}");
-      print("startDate: ${startDate}");
-      print("dueDate: ${dueDate}");
-      print("timelined: ${timelined}");
-      if(timelined){
-        print("startTime: ${startTime}");
-        print("endTime: ${endTime}");
-      }
-      print("importance: ${importance}");
-      print("when: ${when}");
-      print("where: ${where}");
-
-      // Get whole form data
-      final formData = _formkey.currentState?.value;
-
-      // Unfocus
-      FocusScope.of(context).unfocus();
-
-      // Show Dialog
-      showConfirmDialog();
     }
-  }
+
 }

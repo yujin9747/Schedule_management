@@ -39,7 +39,7 @@ class schModel{
       startDate: map['startDate']??'',
       dayToDo: map['dayToDo']??'',
       where: map['where']??'',
-      timeLined: map['timeLined']??false,
+      timeLined: map['timelined']??false,
       startTime: map['startTime']??'',
       endTime: map['endTime']??'',
       importance: map['importance']??0,

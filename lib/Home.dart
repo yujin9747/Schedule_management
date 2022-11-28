@@ -202,7 +202,7 @@ class _Home extends State<Home>{
                     child: ListView.builder(
                       itemCount: sch.length,
                       itemBuilder: (context, index) {
-                        return InkWell( // card 1
+                        return sch[index].timeLined == false ? InkWell( // card 1
                           child: Padding(
                             padding: EdgeInsets.only(
                               left: 30, right: 30, top: 15,),
@@ -270,7 +270,7 @@ class _Home extends State<Home>{
                               ),
                             ),
                           ),
-                        );
+                        ) : Container();
                       },
                     ),
                   ),
@@ -337,8 +337,7 @@ class _Home extends State<Home>{
 
   Stream<List<schModel>> streamSch(){
     try{
-      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').snapshots();
-
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').orderBy('startTime').snapshots();
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
         querySnapshot.docs.forEach((element) {
