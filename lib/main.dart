@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/addSchedule' : (context) => AddSchedule(),
         '/timeline':(context) => TimeLine(),
         '/monthly':(context) => monthlySchedule(),
-        '/detail':(context)=> DetailPage(),
+        //'/detail':(context)=> Detail(),
       },
       debugShowCheckedModeBanner: false,
     );

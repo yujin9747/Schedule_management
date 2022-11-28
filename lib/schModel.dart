@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class schModel{
-  final String title;
-  final String memo;
+  late final String title;
+  late final String memo;
   final String startDate;
   final bool timeLined;
   final String startTime;
@@ -11,6 +13,8 @@ class schModel{
   final String dueDate;
 
   final bool check;
+
+  DocumentReference? reference;
 
   schModel({
     this.title = '',
@@ -59,4 +63,20 @@ class schModel{
     data['dueDate'] = dueDate;
     return data;
   }
+
+  // schModel fromQuerySnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot) {
+  //
+  // }
+
+  // schModel.fromQuerySnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot) {
+  //   return this.fromJson(snapshot.data(), snapshot.reference);
+  // }
+  //
+  // schModel.fromJson(dynamic json, this.reference, this.title, this.memo, this.startDate, this.timeLined, this.startTime, this.endTime, this.importance, this.dateToDo, this.where, this.dueDate, this.check) {
+  //   title = json['title'];
+  //   memo = json['memo'];
+  //   startDate = json['startDate'];
+  //   dateToDo = json['dateToDo'];
+  //
+  // }
 }

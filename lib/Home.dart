@@ -118,23 +118,7 @@ class _Home extends State<Home>{
                       ),
                       child: Column( // percentage
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 18,),
-                            child: CircularPercentIndicator(
-                              radius: 95.0,
-                              lineWidth: 15.0,
-                              percent: 0.8,
-                              center: Text(
-                                "80%",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 40,
-                                ),
-                              ),
-                              progressColor: Colors.white,
-                            ),
-                          ),
+                          Progress(),
                           Align( // text1
                             alignment: Alignment.bottomLeft,
                             child: Padding(
