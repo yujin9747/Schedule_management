@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scheduling/schModel.dart';
 
 import 'edit.dart';
+import 'edit_test.dart';
 
 class Detail extends StatelessWidget {
   final schModel sch;
@@ -30,7 +31,7 @@ class Detail extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Edit(sch),
+                  builder: (context) => EditTest(sch),
                 ),
               );
             },

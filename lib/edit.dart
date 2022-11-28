@@ -17,7 +17,8 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   final _formkey = GlobalKey<FormBuilderState>();
-  late bool timeSet;
+
+  late bool timeSet = false;
 
   FocusNode titleFocusNode = FocusNode();
   FocusNode memoFocusNode = FocusNode();
@@ -131,7 +132,6 @@ class _EditState extends State<Edit> {
               FormBuilderCheckbox(
                 name: 'timeSet',
                 title: Text('시간 설정'),
-                initialValue: timeSet,
                 onChanged: (value){
                   if(value == true){
                     setState(() {
@@ -154,7 +154,6 @@ class _EditState extends State<Edit> {
                 validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'start_time',
                 inputType: InputType.time,
-                initialValue: dtStTime,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon : Icon(Icons.clear),
@@ -171,7 +170,6 @@ class _EditState extends State<Edit> {
                   ? FormBuilderDateTimePicker(
                 validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
                 name: 'end_time',
-                initialValue: dtEdTime,
                 inputType: InputType.time,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
@@ -332,7 +330,7 @@ class _EditState extends State<Edit> {
                   // Todo : upload to Database
                   //** Test Dode : create -> 테스트 성공 **//
                   final uid = FirebaseAuth.instance.currentUser?.uid;
-                  final ref = FirebaseFirestore.instance.collection('schedules/$uid/$when').doc(title);
+                  final ref = FirebaseFirestore.instance.collection('schedules/$uid/$when').doc(widget.sch.title);
                   ref.update({
                     "title" : title,
                     "memo" : memo,
@@ -346,10 +344,10 @@ class _EditState extends State<Edit> {
                     "where" : where,
                     "check" : false,
                   });
-                  const snackbar = SnackBar(content: Text("Success : 일정이 추가되었습니다"),);
+                  const snackbar = SnackBar(content: Text("Success : 일정이 수정되었습니다"),);
                   ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   Navigator.pop(context);
-                  showAddMoreDialog();
+                  //showAddMoreDialog();
                 },
               ),
             ],
