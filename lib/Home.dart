@@ -17,7 +17,7 @@ var now = DateTime.now();
 
 String format = DateFormat('M/d EEEE').format(now).toString();
 String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
-
+late int finishedCount=0;
 
 class Home extends StatefulWidget{
   const Home({super.key});
@@ -28,6 +28,7 @@ class Home extends StatefulWidget{
 
 class _Home extends State<Home>{
   final uid = FirebaseAuth.instance.currentUser?.uid;
+  int length=0;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -64,7 +65,7 @@ class _Home extends State<Home>{
               child: DrawerHeader(
                 child: Column(
                   children: [
-                    Progress(),
+                    Progress(length),
                     Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
                     Row(
                       children: [
@@ -105,6 +106,7 @@ class _Home extends State<Home>{
               );
             } else {
               List<schModel> sch = snapshot.data!;
+              length = sch.length;
               return ListView(
                 children: [
                   Padding(
@@ -118,7 +120,7 @@ class _Home extends State<Home>{
                       ),
                       child: Column( // percentage
                         children: [
-                          Progress(),
+                          Progress(sch.length),
                           Align( // text1
                             alignment: Alignment.bottomLeft,
                             child: Padding(
@@ -340,6 +342,7 @@ class _Home extends State<Home>{
       final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').orderBy('startTime').snapshots();
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
+        finishedCount=0;
         querySnapshot.docs.forEach((element) {
           sch.add(
               schModel.fromMap(
@@ -347,6 +350,7 @@ class _Home extends State<Home>{
                   map:element.data() as Map<String, dynamic>
               )
           );
+          if(element['check'] == true) finishedCount++;
         });
         return sch;
       });
@@ -359,13 +363,24 @@ class _Home extends State<Home>{
 }
 
 class Progress extends StatefulWidget{
+  int length=0;
+  Progress(int length){
+    this.length = length;
+  }
+
   @override
   State<StatefulWidget> createState() {
-    return _ProgressState();
+    return _ProgressState(length);
   }
 }
 
 class _ProgressState extends State<Progress>{
+  int length=0;
+
+  _ProgressState(int length){
+    this.length = length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -375,7 +390,7 @@ class _ProgressState extends State<Progress>{
         lineWidth: 15.0,
         percent: 0.8,
         center: Text(
-          "80%",
+          "${((finishedCount/length)*100).round()}%",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
