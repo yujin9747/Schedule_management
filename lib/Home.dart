@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -26,7 +27,6 @@ class Home extends StatefulWidget{
 }
 
 class _Home extends State<Home>{
-  bool isChecked = false;
   final uid = FirebaseAuth.instance.currentUser?.uid;
 
   Color getColor(Set<MaterialState> states) {
@@ -91,7 +91,7 @@ class _Home extends State<Home>{
         child: Icon(Icons.add),
         heroTag: 'addSchedule',
         onPressed: () {
-          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('일정 추가하기'));
+          Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
         },
       ),
       body: StreamBuilder<List<schModel>>(
@@ -118,23 +118,7 @@ class _Home extends State<Home>{
                       ),
                       child: Column( // percentage
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 18,),
-                            child: CircularPercentIndicator(
-                              radius: 95.0,
-                              lineWidth: 15.0,
-                              percent: 0.8,
-                              center: Text(
-                                "80%",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 40,
-                                ),
-                              ),
-                              progressColor: Colors.white,
-                            ),
-                          ),
+                          Progress(),
                           Align( // text1
                             alignment: Alignment.bottomLeft,
                             child: Padding(
@@ -167,7 +151,7 @@ class _Home extends State<Home>{
                       child: ListView.builder(
                         itemCount: sch.length,
                         itemBuilder: (context, index) {
-                          return IntrinsicHeight(
+                          return sch[index].timeLined == true ?IntrinsicHeight(
                             child: Row(
                               children: [
                                 Container(
@@ -183,16 +167,26 @@ class _Home extends State<Home>{
                                 VerticalDivider(thickness: 2,
                                     width: 10,
                                     color: Colors.black38),
-                                Container(
-                                  height: 150,
-                                  width: 270,
-                                  child: Card(
-                                    child: Text(sch[index].title),
+                                InkWell(
+                                  child: Container(
+                                    height: 150,
+                                    width: 270,
+                                    child: Card(
+                                      child: Text(sch[index].title),
+                                    ),
                                   ),
+                                  onTap:(){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Detail(sch[index]),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
-                          );
+                          ):Container();
                         },
                       ),
                     ),
@@ -260,9 +254,12 @@ class _Home extends State<Home>{
                                               .resolveWith(getColor),
                                           value: sch[index].check,
                                           onChanged: (bool? value) {
-                                            // check data을 수정할 수 있어야함
-                                            setState(() {
-                                              isChecked = value!;
+                                            // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                            // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                            print('schedules/$uid/$dateformat');
+                                            final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
+                                            docRef.update({
+                                              'check': value,
                                             });
                                           },
                                         ),
@@ -273,9 +270,6 @@ class _Home extends State<Home>{
                               ),
                             ),
                           ),
-                          onTap: () {
-                            Navigator.pushNamed(context, '/addSchedule');
-                          },
                         );
                       },
                     ),

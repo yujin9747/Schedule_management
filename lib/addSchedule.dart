@@ -203,7 +203,7 @@ class _AddSchedule extends State<AddSchedule>{
                   }
                   return null;
                 },
-                initialValue: args.date == 'today' ? 'when_today': 'when_tomorrow',
+                initialValue: args.date != 'today' ? 'when_tomorrow': 'when_today',
               ),
               const SizedBox(height: 20,),
               FormBuilderDropdown(
@@ -300,13 +300,26 @@ class _AddSchedule extends State<AddSchedule>{
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const <Widget>[
-                Text(
-                  "아래의 일정이 맞다면 확인을 눌러주세요",
-                ),
+              children: <Widget>[
+                Text("일정이 맞는지 확인해주세요."),
+                Text('title      : $title'),
+                Text('memo       : $memo'),
+                Text('start date : $startDate'),
+                Text('due date   : $dueDate'),
+                timelined ? Text('start time : $startTime') : Container(),
+                timelined ? Text('end time : $endTime') : Container(),
+                Text('importance : $importance'),
+                Text('when       : $when'),
+                Text('where      : $where'),
               ],
             ),
             actions: <Widget>[
+              ElevatedButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('취소'),
+              ),
               ElevatedButton(
                 child: const Text("확인"),
                 onPressed: () {
@@ -314,7 +327,7 @@ class _AddSchedule extends State<AddSchedule>{
                   //** Test Dode : create -> 테스트 성공 **//
                   final uid = FirebaseAuth.instance.currentUser?.uid;
                   final ref = FirebaseFirestore.instance.collection('schedules/${uid}/${when}').doc('${title}');
-                  ref.set({
+                  timelined ? ref.set({
                     "title" : title,
                     "memo" : memo,
                     "startDate" : startDate,
@@ -322,6 +335,19 @@ class _AddSchedule extends State<AddSchedule>{
                     "timelined" : timelined,
                     "startTime" : startTime,
                     "endTime" : endTime,
+                    "importance" : importance,
+                    "dayToDo" : when,
+                    "where" : where,
+                    "check" : false,
+                  })
+                  : ref.set({
+                    "title" : title,
+                    "memo" : memo,
+                    "startDate" : startDate,
+                    "dueDate" : dueDate,
+                    "timelined" : timelined,
+                    // "startTime" : startTime,
+                    // "endTime" : endTime,
                     "importance" : importance,
                     "dayToDo" : when,
                     "where" : where,
@@ -427,8 +453,10 @@ class _AddSchedule extends State<AddSchedule>{
       print("startDate: ${startDate}");
       print("dueDate: ${dueDate}");
       print("timelined: ${timelined}");
-      print("startTime: ${startTime}");
-      print("endTime: ${endTime}");
+      if(timelined){
+        print("startTime: ${startTime}");
+        print("endTime: ${endTime}");
+      }
       print("importance: ${importance}");
       print("when: ${when}");
       print("where: ${where}");
