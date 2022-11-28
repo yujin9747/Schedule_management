@@ -4,6 +4,7 @@ import 'package:scheduling/addSchedule.dart';
 import 'package:scheduling/login.dart';
 import 'package:scheduling/monthlySchedule.dart';
 import 'package:scheduling/timeline.dart';
+import 'package:scheduling/tomorrow.dart';
 import 'Home.dart';
 import 'Recharge.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/addSchedule' : (context) => AddSchedule(),
         '/timeline':(context) => TimeLine(),
         '/monthly':(context) => monthlySchedule(),
+        '/tomorrow':(context) => Tomorrow(),
         //'/detail':(context)=> Detail(),
       },
       debugShowCheckedModeBanner: false,
