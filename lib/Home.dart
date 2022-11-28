@@ -337,8 +337,7 @@ class _Home extends State<Home>{
 
   Stream<List<schModel>> streamSch(){
     try{
-      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').snapshots();
-
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').orderBy('startTime').snapshots();
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
         querySnapshot.docs.forEach((element) {
