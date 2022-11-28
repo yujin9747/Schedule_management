@@ -7,11 +7,7 @@ import 'package:scheduling/timeline.dart';
 import 'Home.dart';
 import 'Recharge.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-<<<<<<< HEAD
 import 'detail.dart';
-=======
->>>>>>> 6db2cda (working on editing)
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
