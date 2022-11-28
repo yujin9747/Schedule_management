@@ -61,12 +61,12 @@ class _Home extends State<Home>{
         child: ListView(
           children: <Widget>[
             SizedBox(
-              height: 300,
+              height: 330,
               child: DrawerHeader(
                 child: Column(
                   children: [
                     Progress(length),
-                    Text('장유진님 9월 11일 일정 80% 진행중입니다.'),
+                    Text('$uid님 ${now.toString().substring(0, 11)} 일정 ${((finishedCount/length)*100).round()}% 진행중입니다.'),
                     Row(
                       children: [
                         Text('오늘도 좋은 하루 되세요'),
@@ -388,7 +388,7 @@ class _ProgressState extends State<Progress>{
       child: CircularPercentIndicator(
         radius: 95.0,
         lineWidth: 15.0,
-        percent: 0.8,
+        percent: finishedCount/length,
         center: Text(
           "${((finishedCount/length)*100).round()}%",
           style: TextStyle(
