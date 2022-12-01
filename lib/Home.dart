@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:scheduling/Recharge.dart';
+import 'package:scheduling/restModel.dart';
 import 'package:scheduling/schModel.dart';
 import 'detail.dart';
 import 'timeline.dart';
@@ -18,6 +20,7 @@ var now = DateTime.now();
 String format = DateFormat('M/d EEEE').format(now).toString();
 String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
 late int finishedCount=0;
+int length=1;
 
 class Home extends StatefulWidget{
   const Home({super.key});
@@ -28,7 +31,6 @@ class Home extends StatefulWidget{
 
 class _Home extends State<Home>{
   final uid = FirebaseAuth.instance.currentUser?.uid;
-  int length=1;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -65,7 +67,7 @@ class _Home extends State<Home>{
               child: DrawerHeader(
                 child: Column(
                   children: [
-                    Progress(length),
+                    Progress(),
                     Text('$uid님 ${now.toString().substring(0, 11)} 일정 ${((finishedCount/length)*100).round()}% 진행중입니다.'),
                     Row(
                       children: [
@@ -124,7 +126,7 @@ class _Home extends State<Home>{
                       child: Column( // percentage
                         children: [
                           const SizedBox(height: 10,),
-                          Progress(sch.length),
+                          Progress(),
                           Align( // text1
                             alignment: Alignment.bottomLeft,
                             child: Padding(
@@ -416,53 +418,103 @@ class _Home extends State<Home>{
                       },
                     ),
                   ),
-                  const SizedBox(height: 20,),
-                  InkWell( // card 1
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                      child:
-                      Container(
-                        width: 50,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.pink.shade200,
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(),
-                            child: Text("오늘 마감해야하는 일들입니다!"),
+                  const SizedBox(height: 40,),
+                  Padding(
+                    padding: EdgeInsets.only(left: 37,),
+                    child: const Text("오늘 계획한 휴식", style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),),
+                  ),
+                  const SizedBox(height: 10,),
+                  StreamBuilder<List<restModel>>(
+                    stream: streamRestSch(),
+                    builder:(context, snapshot) {
+                      if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
+                        return Center(child: Column(children: [
+                          CircularProgressIndicator(),
+                          Text(uid!)
+                        ]));
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('오류가 발생했습니다.'),
+                        );
+                      } else {
+                        List<restModel> sch = snapshot.data!;
+                        print("rest length : ${sch.length}");
+                        return Expanded(
+                          child: CarouselSlider.builder(
+                            itemCount: sch.length,
+                            itemBuilder: (BuildContext context, int index, int realIndex) {
+                              return Container(
+                                width: 300,
+                                child: Card(
+                                  child: InkWell(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(width: 5,),
+                                          Text('${sch[index].title}', style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold ),),
+                                          Expanded(child: Container(),),
+                                          Checkbox(
+                                            checkColor: Colors.white,
+                                            fillColor: MaterialStateProperty
+                                                .resolveWith(getColor),
+                                            value: sch[index].check,
+                                            onChanged: (bool? value) {
+                                              // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                              // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                              print('rests/$uid/$dateformat');
+                                              final docRef = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').doc('${sch[index].title}');
+                                              docRef.update({
+                                                'check': value,
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                        Expanded(
+                                          //mainAxisAlignment: MainAxisAlignment.end,
+                                          child:
+                                            TextButton(
+                                              child: Text("delete", style: TextStyle(color:Colors.black38,),),
+                                              onPressed:(){
+                                                final delRef = FirebaseFirestore.instance.collection("rests/$uid/$dateformat").doc("${sch[index].title}");
+                                                delRef.delete();
+                                              },
+                                            ),
+
+                                        ),
+                                    ]
+                                    ),
+                                    onTap: () async {
+                                      print("index $index 일정 모듈 is cliked!");
+                                      // 디테일 페이지로 넘어가기
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            options: CarouselOptions(
+                              height: 100,
+                              aspectRatio: 16/9,
+                              viewportFraction: 0.6,
+                              initialPage: 0,
+                              enableInfiniteScroll: false,
+                              reverse: false,
+                              autoPlay: false,
+                              autoPlayInterval: Duration(seconds: 3),
+                              autoPlayAnimationDuration: Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                              //onPageChanged: callbackFunction,
+                              scrollDirection: Axis.horizontal,
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      print(uid);
+                        );
+                      }
                     },
                   ),
-                  InkWell( // card 2
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30, right: 30, top: 15,),
-                      child: Container(
-                        width: 50,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(),
-                            child: Text('쉼 추가하기'),
-                          ),
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/recharge');
-                    },
-                  ),
-                  const SizedBox(height: 30,),
                 ],
               );
             }
@@ -496,26 +548,38 @@ class _Home extends State<Home>{
     }
   }
 
+  Stream<List<restModel>> streamRestSch(){
+    try{
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').snapshots();
+      return snapshots.map((querySnapshot){
+        List<restModel> sch = [];
+        querySnapshot.docs.forEach((element) {
+          sch.add(
+              restModel.fromMap(
+                  id:element.id,
+                  map:element.data() as Map<String, dynamic>
+              )
+          );
+        });
+        return sch;
+      });
+    }catch(ex){
+      log('error)', error : ex.toString(), stackTrace: StackTrace.current);
+      return Stream.error(ex.toString());
+    }
+  }
+
 }
 
 class Progress extends StatefulWidget{
-  int length=0;
-  Progress(int length){
-    this.length = length;
-  }
 
   @override
   State<StatefulWidget> createState() {
-    return _ProgressState(length);
+    return _ProgressState();
   }
 }
 
 class _ProgressState extends State<Progress>{
-  int length=0;
-
-  _ProgressState(int length){
-    this.length = length;
-  }
 
   @override
   Widget build(BuildContext context) {
