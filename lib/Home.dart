@@ -28,7 +28,7 @@ class Home extends StatefulWidget{
 
 class _Home extends State<Home>{
   final uid = FirebaseAuth.instance.currentUser?.uid;
-  int length=0;
+  int length=1;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -86,6 +86,7 @@ class _Home extends State<Home>{
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
             DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
             DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural, route:'/recharge'),
+            DrawerList(text: '등록된 일정에서 추가하기', icon: Icons.view_module_outlined, route:'/addModule'),
           ],
         ),
       ),
@@ -108,6 +109,7 @@ class _Home extends State<Home>{
             } else {
               List<schModel> sch = snapshot.data!;
               length = sch.length;
+              print("length : $length");
               return ListView(
                 children: [
                   Padding(
@@ -206,9 +208,27 @@ class _Home extends State<Home>{
                                               style: TextStyle(fontSize: 14),
                                               overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
                                             ),
-                                            const SizedBox(height: 5,),
-                                            Text("장소 : ${sch[index].where}"),
-                                            //Text(sch[index].title),
+                                            Row(
+                                              children: [
+                                                Text("장소 : ${sch[index].where}"),
+                                                Expanded(child: Container(),),
+                                                Checkbox(
+                                                  checkColor: Colors.white,
+                                                  fillColor: MaterialStateProperty
+                                                      .resolveWith(getColor),
+                                                  value: sch[index].check,
+                                                  onChanged: (bool? value) {
+                                                    // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                                    // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                                    print('schedules/$uid/$dateformat');
+                                                    final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
+                                                    docRef.update({
+                                                      'check': value,
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -466,6 +486,8 @@ class _Home extends State<Home>{
           );
           if(element['check'] == true) finishedCount++;
         });
+        print("uid : ${uid}");
+        print("sch : ${sch.length}");
         return sch;
       });
     }catch(ex){
@@ -540,7 +562,9 @@ class DrawerList extends StatelessWidget{
         if(route != '/') {
           if(text == '오늘 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
           else if(text == '내일 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
-          else Navigator.pushNamed(context, route);
+          else {
+            Navigator.pushNamed(context, route);
+          }
         }
       },
       trailing: Icon(Icons.keyboard_arrow_right),

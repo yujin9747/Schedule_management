@@ -8,6 +8,7 @@ import 'package:scheduling/tomorrow.dart';
 import 'Home.dart';
 import 'Recharge.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'addModule.dart';
 import 'detail.dart';
 
 Future<void> main() async {
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/timeline':(context) => TimeLine(),
         '/monthly':(context) => monthlySchedule(),
         '/tomorrow':(context) => Tomorrow(),
+        '/addModule':(context) => AddModule(),
         //'/detail':(context)=> Detail(),
       },
       debugShowCheckedModeBanner: false,
