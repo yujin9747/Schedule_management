@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:scheduling/Recharge.dart';
 import 'package:scheduling/restModel.dart';
@@ -21,6 +22,9 @@ String format = DateFormat('M/d EEEE').format(now).toString();
 String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
 late int finishedCount=0;
 int length=1;
+bool closeDay=false;
+List<schModel> sch = [];
+List<restModel> Rsch = [];
 
 class Home extends StatefulWidget{
   const Home({super.key});
@@ -102,6 +106,14 @@ class _Home extends State<Home>{
       body: StreamBuilder<List<schModel>>(
           stream: streamSch(),
           builder: (context, snapshot){
+            int currentHour = int.parse(DateTime.now().toString().substring(11, 13));
+            //print(currentTime);
+            if(currentHour >= 21){
+              closeDay = true;
+            }
+            else {
+              closeDay = false;
+            }
             if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
               return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
             } else if (snapshot.hasError) {
@@ -109,19 +121,19 @@ class _Home extends State<Home>{
                 child: Text('오류가 발생했습니다.'),
               );
             } else {
-              List<schModel> sch = snapshot.data!;
+              sch = snapshot.data!;
               length = sch.length;
               print("length : $length");
               return ListView(
                 children: [
-                  Padding(
+                  closeDay == false ? Padding(
                     padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
                     child: Container(
                       width: 50,
                       height: 300,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.purpleAccent,
+                        color: Colors.amber,
                       ),
                       child: Column( // percentage
                         children: [
@@ -143,6 +155,48 @@ class _Home extends State<Home>{
                           ),
                         ],
                       ),
+                    ),
+                  ) :
+                  Padding(
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
+                    child: InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.indigoAccent,
+                        ),
+                        child: Column( // percentage
+                          children: [
+                            const SizedBox(height: 10,),
+                            // Progress(),
+                            Expanded(
+                              child: Container(
+                                child: Lottie.network("https://assets6.lottiefiles.com/temp/lf20_Jj2Qzq.json"),
+                              ),
+                            ),
+                            Align( // text1
+                              alignment: Alignment.bottomLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 20, left: 20,),
+                                child: Text('밤 9시가 지났어요!', style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                              ),
+                            ),
+                            Align( // text2
+                              alignment: Alignment.bottomLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 20,),
+                                child: Text("오늘 하루를 마무리 하러 가볼까요?                       >> ", style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                              ),
+                            ),
+                            const SizedBox(height: 10,),
+                          ],
+                        ),
+                      ),
+                      onTap: (){
+                        Navigator.pushNamed(context, "/closeDay", arguments:closeDayArguments(sch, Rsch));
+                      },
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -438,11 +492,11 @@ class _Home extends State<Home>{
                           child: Text('오류가 발생했습니다.'),
                         );
                       } else {
-                        List<restModel> sch = snapshot.data!;
-                        print("rest length : ${sch.length}");
+                        Rsch = snapshot.data!;
+                        print("rest length : ${Rsch.length}");
                         return Expanded(
                           child: CarouselSlider.builder(
-                            itemCount: sch.length,
+                            itemCount: Rsch.length,
                             itemBuilder: (BuildContext context, int index, int realIndex) {
                               return Container(
                                 width: 300,
@@ -454,18 +508,18 @@ class _Home extends State<Home>{
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           const SizedBox(width: 5,),
-                                          Text('${sch[index].title}', style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold ),),
+                                          Text('${Rsch[index].title}', style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold ),),
                                           Expanded(child: Container(),),
                                           Checkbox(
                                             checkColor: Colors.white,
                                             fillColor: MaterialStateProperty
                                                 .resolveWith(getColor),
-                                            value: sch[index].check,
+                                            value: Rsch[index].check,
                                             onChanged: (bool? value) {
                                               // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
                                               // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
                                               print('rests/$uid/$dateformat');
-                                              final docRef = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').doc('${sch[index].title}');
+                                              final docRef = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').doc('${Rsch[index].title}');
                                               docRef.update({
                                                 'check': value,
                                               });
@@ -639,4 +693,10 @@ class DrawerList extends StatelessWidget{
 class addScheduleArguments{
   late String date;
   addScheduleArguments(this.date);
+}
+
+class closeDayArguments{
+  late List<schModel> sch;
+  late List<restModel> Rsch;
+  closeDayArguments(this.sch, this.Rsch);
 }
