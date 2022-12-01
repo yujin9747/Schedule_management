@@ -48,7 +48,7 @@ class _EditTest extends State<EditTest>{
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        title: const Text('EditTEST', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
+        title: const Text('EditTEST', style: TextStyle(fontSize: 30, color: Colors.black),),
         elevation: 0.0,
         backgroundColor: Colors.white,
         centerTitle: true,
