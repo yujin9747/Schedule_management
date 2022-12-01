@@ -201,9 +201,6 @@ class _AddSchedule extends State<AddSchedule>{
                 ],
                 validator: (value){
                   FormBuilderValidators.required();
-                  if(value == 'when_userSelect' && _formkey.currentState?.fields['when_userSelect']?.value == null){
-                    return  "You should select the date";
-                  }
                   return null;
                 },
                 initialValue: args.date != 'today' ? 'when_tomorrow': 'when_today',
@@ -428,7 +425,7 @@ class _AddSchedule extends State<AddSchedule>{
         // startDate = DateTime(int.parse(dateRange.substring(0,4)), dateRange?.substring(5, 7), dateRange?.substring(8, 10));
         // dueDate = DateTime(dateRange?.substring(26,30), dateRange?.substring(31, 33), dateRange?.substring(34, 36));
         startDate = dateRange?.substring(0,10);
-        dueDate = dateRange?.substring(26, 37);
+        dueDate = dateRange?.substring(26, 36);
       }
       if(_formkey.currentState?.fields['timeSet']?.value != null && _formkey.currentState?.fields['timeSet']?.value == true){
         timelined = true;
@@ -450,7 +447,7 @@ class _AddSchedule extends State<AddSchedule>{
           when = DateTime.now().toString().substring(0, 10);
         }
         else if(dayToDo == 'when_later'){
-
+          when = 'null';
         }
         else if(dayToDo == 'when_userSelect'){
           when = _formkey.currentState?.fields['when_selectedDate']?.value.toString().substring(0, 10);
