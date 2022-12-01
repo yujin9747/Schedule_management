@@ -11,6 +11,7 @@ class schModel{
   final String dayToDo;
   final String where;
   final String dueDate;
+  final String docid;
 
   final bool check;
 
@@ -29,12 +30,14 @@ class schModel{
     this.importance = 0,
     this.check = false,
     this.dueDate = '',
+    this.docid = '',
   });
 
   factory schModel.fromMap({required String id, required Map<String,dynamic> map}){
 
     return schModel(
       title: map['title']??'',
+      docid: map['docid']??'',
       memo: map['memo']??'',
       startDate: map['startDate']??'',
       dayToDo: map['dayToDo']??'',
@@ -51,6 +54,7 @@ class schModel{
   Map<String, dynamic> toMap(){
     Map<String, dynamic> data = {};
     data['title'] = title;
+    data['docid'] = docid;
     data['memo'] = memo;
     data['startDate'] = startDate;
     data['dayToDo'] = dayToDo;
