@@ -52,7 +52,7 @@ class _AddModule extends State<AddModule>{
                   Text('아직 추가되지 않은 일정입니다.', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold ),),
                   Text('마감일이 임박한 일정부터 추가해보세요!'),
                   const SizedBox(height: 10,),
-                  Expanded(
+                  sch.length != 0 ? Expanded(
                     child: CarouselSlider.builder(
                       itemCount: sch.length,
                       itemBuilder: (BuildContext context, int index, int realIndex) {
@@ -88,6 +88,18 @@ class _AddModule extends State<AddModule>{
                         scrollDirection: Axis.vertical,
                       ),
                     ),
+                  )
+                  : Expanded(
+                      child: Center(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("등록되지 않은 일정이 없습니다."),
+                              Text("일정 모듈을 추가하세요."),
+                            ]
+                        ),
+                      ),
                   ),
 
                 ],
