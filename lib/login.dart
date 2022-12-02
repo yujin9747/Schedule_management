@@ -23,8 +23,10 @@ class _LoginState extends State<Login> {
               future: Authentication.initializeFirebase(context: context),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Text('Error initializing Firebase');
-                }else return GoogleSignInButton();
+                  return const Text('Error initializing Firebase');
+                }else {
+                  return const GoogleSignInButton();
+                }
               },
             ),
             // ElevatedButton(
@@ -45,6 +47,8 @@ class _LoginState extends State<Login> {
 }
 
 class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({super.key});
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }

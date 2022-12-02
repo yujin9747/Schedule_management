@@ -209,9 +209,9 @@ class _Home extends State<Home>{
                   Padding( // time line
                     padding: EdgeInsets.only(left: 30,),
                     child: Container(
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: sch.length,
+                      height: 120,
+                      child: ListView.builder( // 여기 default 조건 넣어야함
+                        itemCount: sch.length, // default
                         itemBuilder: (context, index) {
                           return sch[index].timeLined == true ?IntrinsicHeight(
                             child: Row(
@@ -243,7 +243,7 @@ class _Home extends State<Home>{
                                               children: [
                                                 Text(
                                                   sch[index].title,
-                                                  style: TextStyle(fontSize: 25),
+                                                  style: TextStyle(fontSize: 20),
                                                 ),
                                                 Expanded(child: Container()),
                                                 IconButton(
@@ -261,7 +261,7 @@ class _Home extends State<Home>{
                                             ),
                                             Text(
                                               sch[index].memo.split('\n').first,  // 여러줄일 경우 overflow.elipsis가 해결해주지 못하기 때문에 홈에서는 간단히 첫 줄만 표기
-                                              style: TextStyle(fontSize: 14),
+                                              style: TextStyle(fontSize: 13),
                                               overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
                                             ),
                                             Row(
@@ -312,16 +312,15 @@ class _Home extends State<Home>{
                     child: const Text("오늘 마감해야 하는 일", style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.bold),),
                   ),
-                  const SizedBox(height: 10,),
                   Container(
-                    height: 250,
-                    child: ListView.builder(
-                      itemCount: sch.length,
+                    height: 115,
+                    child: ListView.builder( // 여기 default 조건 넣어야함
+                      itemCount: sch.length, // default
                       itemBuilder: (context, index) {
                         return sch[index].timeLined == false && sch[index].dueDate == now.toString().substring(0, 11)? InkWell( // card 1
                           child: Padding(
                             padding: EdgeInsets.only(
-                              left: 30, right: 30, top: 15,),
+                              left: 30, right: 30, top: 10,),
                             child: Container(
                               width: 50,
                               height: 100,
@@ -389,22 +388,21 @@ class _Home extends State<Home>{
                       },
                     ),
                   ),
-                  const SizedBox(height: 40,),
+                  const SizedBox(height: 25,),
                   Padding(
                     padding: EdgeInsets.only(left: 37,),
                     child: const Text("오늘 마감이 아닌 일정", style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.bold),),
                   ),
-                  const SizedBox(height: 10,),
                   Container(
-                    height: 250,
-                    child: ListView.builder(
+                    height: 115,
+                    child: ListView.builder( // 여기도 default 조건 넣어야함
                       itemCount: sch.length,
                       itemBuilder: (context, index) {
                         return sch[index].timeLined == false && sch[index].dueDate != now.toString().substring(0, 11)? InkWell( // card 1
                           child: Padding(
                             padding: EdgeInsets.only(
-                              left: 30, right: 30, top: 15,),
+                              left: 30, right: 30, top: 10,),
                             child: Container(
                               width: 50,
                               height: 100,
