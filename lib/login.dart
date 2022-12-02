@@ -29,16 +29,6 @@ class _LoginState extends State<Login> {
                 }
               },
             ),
-            // ElevatedButton(
-            //   onPressed : ()async{
-            //     User? user = await Authentication.signInAnonymously(context: context);
-            //     if (user != null) {
-            //       print('user id : '+ user.uid);
-            //       Navigator.pop(context);
-            //     }
-            //   },
-            //   child: Text('anonymously login'),
-            // ),
           ],
         ),
       ),
