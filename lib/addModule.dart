@@ -29,7 +29,16 @@ class _AddModule extends State<AddModule>{
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('일정 모듈에서 추가하기'),
+        title: const Text("일정 모듈에서 추가히기", style: TextStyle(color: Colors.black, fontSize: 20,),),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
       ),
       body:StreamBuilder<List<schModel>>(
         stream: streamSch(),
@@ -49,6 +58,7 @@ class _AddModule extends State<AddModule>{
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 20,),
                   Text('아직 추가되지 않은 일정입니다.', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold ),),
                   Text('마감일이 임박한 일정부터 추가해보세요!'),
                   const SizedBox(height: 10,),
