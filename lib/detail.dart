@@ -14,7 +14,7 @@ class Detail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('일과 상세 보기', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
+        title: Text('$Detail', style: TextStyle(fontSize: 30, color: Colors.black),),
         elevation: 0.0,
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -31,7 +31,7 @@ class Detail extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditTest(sch),
+                  builder: (context) => Edit(sch),
                 ),
               );
             },

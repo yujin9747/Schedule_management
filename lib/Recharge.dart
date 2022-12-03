@@ -28,7 +28,19 @@ class _RechargeState extends State<Recharge>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text('휴식 일정 추가하기')),
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: Text('쉼 일정 추가하기', style: TextStyle(fontSize: 30, color: Colors.black),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
+      ),
       body:StreamBuilder<List<restModel>>(
           stream: streamSch(),
           builder: (context, snapshot){

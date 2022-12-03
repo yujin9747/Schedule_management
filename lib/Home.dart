@@ -25,6 +25,10 @@ late int finishedCount=0;
 int length=1;
 bool closeDay=false;
 List<schModel> sch = [];
+List<schModel> schYTime = [];
+List<schModel> schNoTime = [];
+List<schModel> schNoToday = [];
+
 List<restModel> Rsch = [];
 
 class Home extends StatefulWidget{
@@ -37,7 +41,6 @@ class Home extends StatefulWidget{
 class _Home extends State<Home>{
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final id = FirebaseAuth.instance.currentUser?.displayName;
-  //final dbTimeLinedT = FirebaseFirestore.instance.collection("scheduling").where("timeLined", isEqualTo: true);
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -62,7 +65,7 @@ class _Home extends State<Home>{
         elevation: 0.0,
         leading: Builder( // menu icon
           builder: (context) => IconButton(
-            icon: Icon(Icons.menu, color: Colors.black,),
+            icon: const Icon(Icons.menu, color: Colors.black,),
             onPressed: () => Scaffold.of(context).openDrawer(), // open drawer
           ),
         ),
@@ -70,45 +73,58 @@ class _Home extends State<Home>{
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            SizedBox(
-              height: 380,
-              child: DrawerHeader(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('${now.toString().substring(0, 11)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),),
-                    const SizedBox(height: 20,),
-                    sch.isEmpty? Container() : Progress(),
-                    const SizedBox(height: 10,),
+            StreamBuilder<List<schModel>>(
+              stream: streamSch(),
+              builder: (context, snapshot){
+                if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
+                  return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
+                } else if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('오류가 발생했습니다.'),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 380,
+                    child: DrawerHeader(
+                      decoration: const BoxDecoration(
+                        color:Colors.purple,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(now.toString().substring(0, 11), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),),
+                          const SizedBox(height: 20,),
+                          sch.isEmpty? Container() : Progress(),
+                          const SizedBox(height: 10,),
 
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('$id님\t\t', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white,),),
-                        Text('환영합니다!\t\t', style: TextStyle(color: Colors.white,),),
-                      ],
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('$id님\t\t', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white,),),
+                              Text('환영합니다!\t\t', style: TextStyle(color: Colors.white,),),
+                            ],
+                          ),
+
+                          sch.isEmpty?
+                          Text('$id님 오늘 일정을 설정해 주세요.', style: TextStyle(color: Colors.white,),) : // default:
+                          Text('오늘 일정 중 ${((finishedCount/length)*100).round()}% 진행중입니다.', style: TextStyle(color: Colors.white,),),
+
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('좋은 하루 되세요\t\t', style: TextStyle(color: Colors.white,),),
+                              Icon(Icons.tag_faces, size: 15, color: Colors.white,),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-
-                    sch.isEmpty?
-                    Text('$id님 오늘 일정을 설정해 주세요.', style: TextStyle(color: Colors.white,),) : // default:
-                    Text('오늘 일정 중 ${((finishedCount/length)*100).round()}% 진행중입니다.', style: TextStyle(color: Colors.white,),),
-
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('좋은 하루 되세요\t\t', style: TextStyle(color: Colors.white,),),
-                        Icon(Icons.tag_faces, size: 15, color: Colors.white,),
-                      ],
-                    ),
-                  ],
-                ),
-                decoration: BoxDecoration(
-                  color:Colors.purple,
-                ),
-              ),
+                  );
+                }
+              }
             ),
             DrawerList(text: '홈', icon: Icons.home, route:'/'),
             DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
@@ -132,13 +148,16 @@ class _Home extends State<Home>{
           stream: streamSch(),
           builder: (context, snapshot){
             int currentHour = int.parse(DateTime.now().toString().substring(11, 13));
+
             //print(currentTime);
             if(currentHour >= 21){
               closeDay = true;
             }
+
             else {
               closeDay = false;
             }
+
             if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
               return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
             } else if (snapshot.hasError) {
@@ -147,12 +166,18 @@ class _Home extends State<Home>{
               );
             } else {
               sch = snapshot.data!;
+              schYTime = sch.where((element) => element.timeLined == true).toList();
+              schNoTime = sch.where((element) => element.dueDate == dateformat && element.timeLined == false).toList();
+              schNoToday = sch.where((element) => element.dueDate != dateformat && element.timeLined == false).toList();
+
               length = sch.length;
 
               print("length : $length");
+
               return ListView(
                 children: [
                   closeDay == false ?
+
                   Padding(
                     padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
                     child: Container(
@@ -187,7 +212,8 @@ class _Home extends State<Home>{
                         ],
                       ),
                     ),
-                  ) :
+                  )
+                 :
                   Padding(
                     padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
                     child: InkWell(
@@ -231,215 +257,238 @@ class _Home extends State<Home>{
                     ),
                   ),
                   const SizedBox(height: 30,),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 37,),
-                    child: Text("시간 순 일정", style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),),
-                  ),
-                  const SizedBox(height: 10,),
-                  Padding( // time line
-                    padding: const EdgeInsets.only(left: 30,),
-                    child: SizedBox(
-                      height: 120,
-                      child:
-                      ListView.builder(
-                        itemCount: sch.where((element) => element.timeLined == true).isEmpty? 1 : sch.length, // default
-                        itemBuilder: (context, index) {
-                          return sch.isNotEmpty && sch[index].timeLined == true ?IntrinsicHeight(
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 50,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:[
+                      const Padding(
+                      padding: EdgeInsets.only(left: 37,),
+                      child: Text("시간 순 일정", style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),),
+                      ),
+                      const SizedBox(height: 10,),
+
+                      sch.isNotEmpty && schYTime.isNotEmpty?
+
+                      Padding( // time line
+                        padding: const EdgeInsets.only(left: 30, bottom: 30,),
+                        child: SizedBox(
+                          height: 120,
+                          child :
+                          ListView.builder(
+                            itemCount: schYTime.length,
+                            itemBuilder: (context, index) {
+                                return IntrinsicHeight(
+                                  child: Row(
                                     children: [
-                                      Text(sch[index].startTime),
-                                      Text(sch[index].endTime),
-                                    ],
-                                  ),
-                                ),
-                                const VerticalDivider(
-                                    thickness: 2,
-                                    width: 10,
-                                    color: Colors.black38),
-                                InkWell(
-                                  child: SizedBox(
-                                    height: 120,
-                                    width: 270,
-                                    child: Card(
-                                      child:Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                      Container(
+                                        width: 50,
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  sch[index].title,
-                                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
-                                                ),
-                                                Expanded(child: Container()),
-                                                IconButton(
-                                                  onPressed: (){
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => Detail(sch[index]),
-                                                      ),
-                                                    );
-                                                  },
-                                                  icon: Icon(Icons.more_vert),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              sch[index].memo.split('\n').first,  // 여러줄일 경우 overflow.elipsis가 해결해주지 못하기 때문에 홈에서는 간단히 첫 줄만 표기
-                                              style: const TextStyle(fontSize: 13),
-                                              overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text("장소 : ${sch[index].where}"),
-                                                Expanded(child: Container(),),
-                                                Checkbox(
-                                                  checkColor: Colors.white,
-                                                  fillColor: MaterialStateProperty
-                                                      .resolveWith(getColor),
-                                                  value: sch[index].check,
-                                                  onChanged: (bool? value) {
-                                                    // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
-                                                    // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
-                                                    print('schedules/$uid/$dateformat');
-                                                    final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
-                                                    docRef.update({
-                                                      'check': value,
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            ),
+                                            Text(schYTime[index].startTime),
+                                            Text(schYTime[index].endTime),
                                           ],
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  onTap:(){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Detail(sch[index]),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ):
-                          InkWell( // default
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 30, bottom: 0,),
-                              child: Container(
-                                width: 50,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.pink.shade200,
-                                ),
-                                child: InkWell(
-                                  child: const Center(
-                                    child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
-                                  ),
-                                  onTap: (){
-                                    Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
-                                  },
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30,),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 37,),
-                    child: Text("오늘 마감해야 하는 일", style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),),
-                  ),
-                  SizedBox(
-                    height: 115,
-                    child: ListView.builder( // 여기 default 조건 넣어야함
-                      itemCount: sch.where((element) => element.timeLined == false && element.dueDate == now.toString().substring(0, 11)).isEmpty? 1 : sch.where((element) => element.timeLined == false && element.dueDate == now.toString().substring(0, 11)).length, // default
-                      itemBuilder: (context, index) {
-                        return sch.isNotEmpty && sch[index].timeLined == false && sch[index].dueDate == now.toString().substring(0, 11)?
-                        InkWell( // card 1
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 30, right: 30, top: 10,),
-                            child: Container(
-                              width: 50,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey.shade400,
-                              ),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: 400,
-                                    child: Row(
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10, right: 230, top: 5,),
-                                          child: Icon(Icons.book_rounded,
-                                            color: Colors.white, size: 40,),
+                                      const VerticalDivider(
+                                          thickness: 2,
+                                          width: 10,
+                                          color: Colors.black38),
+                                      InkWell(
+                                        child: SizedBox(
+                                          height: 120,
+                                          width: 270,
+                                          child: Card(
+                                            child:Padding(
+                                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        schYTime[index].title,
+                                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
+                                                      ),
+                                                      Expanded(child: Container()),
+                                                      IconButton(
+                                                        onPressed: (){
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) => Detail(sch[index]),
+                                                            ),
+                                                          );
+                                                        },
+                                                        icon: Icon(Icons.more_vert),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    schYTime[index].memo.split('\n').first,  // 여러줄일 경우 overflow.elipsis가 해결해주지 못하기 때문에 홈에서는 간단히 첫 줄만 표기
+                                                    style: const TextStyle(fontSize: 13),
+                                                    overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text("장소 : ${schYTime[index].where}"),
+                                                      Expanded(child: Container(),),
+                                                      Checkbox(
+                                                        checkColor: Colors.white,
+                                                        fillColor: MaterialStateProperty
+                                                            .resolveWith(getColor),
+                                                        value: schYTime[index].check,
+                                                        onChanged: (bool? value) {
+                                                          // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                                          // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                                          print('schedules/$uid/$dateformat');
+                                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc(schYTime[index].title);
+                                                          docRef.update({
+                                                            'check': value,
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        IconButton(
-                                            onPressed:(){
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => Detail(sch[index]),
-                                                ),
-                                              );
-                                            },
-                                            icon: Icon(Icons.more_vert,),
+                                        onTap:(){
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Detail(schYTime[index]),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                            },
+                          ),
+                        ),
+                      ):
+                      InkWell( // default
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 30, right: 30, bottom: 30,),
+                              child: Container(
+                                  width: 450,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.pink.shade200,
+                                  ),
+                                  child: InkWell(
+                                      child: const Center(
+                                          child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                      ),
+                                      onTap: (){
+                                        Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
+                                      },
+                                  ),
+                              ),
+                          ),
+                      ),
+                    ],
+                  ),
+
+
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 37, bottom: 10,),
+                        child: Text("오늘 마감해야 하는 일", style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),),
+                      ),
+
+                      sch.isNotEmpty && schNoTime.isNotEmpty?
+
+                      SizedBox(
+                        height: 115,
+                        child: ListView.builder( // 여기 default 조건 넣어야함
+                          itemCount: schNoTime.length,
+
+                          itemBuilder: (context, index) {
+                              return InkWell( // card 1
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 30, right: 30, top: 10,),
+                                  child: Container(
+                                    width: 50,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 400,
+                                          child: Row(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 10, right: 230, top: 5,),
+                                                child: Icon(Icons.book_rounded,
+                                                  color: Colors.white, size: 40,),
+                                              ),
+                                              IconButton(
+                                                onPressed:(){
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => Detail(schNoTime[index]),
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.more_vert,),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20,),
+                                              child: Text(schNoTime[index].title),
+                                            ),
+                                            Expanded(child: Container(),),
+                                            Checkbox(
+                                              checkColor: Colors.white,
+                                              fillColor: MaterialStateProperty
+                                                  .resolveWith(getColor),
+                                              value: schNoTime[index].check,
+                                              onChanged: (bool? value) {
+                                                // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                                // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                                print('schedules/$uid/$dateformat');
+                                                final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc(schNoTime[index].title);
+                                                docRef.update({
+                                                  'check': value,
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(width : 5),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 20,),
-                                        child: Text(sch[index].title),
-                                      ),
-                                      Expanded(child: Container(),),
-                                      Checkbox(
-                                        checkColor: Colors.white,
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith(getColor),
-                                        value: sch[index].check,
-                                        onChanged: (bool? value) {
-                                          // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
-                                          // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
-                                          print('schedules/$uid/$dateformat');
-                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
-                                          docRef.update({
-                                            'check': value,
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(width : 5),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ) :
-                        InkWell( // default
+                                ),
+                              );
+                          },
+                        ),
+                      )
+                      :
+                      SizedBox(
+                        width: 450,
+                        child: InkWell( // default
                           child: Padding(
                             padding: const EdgeInsets.only(left:30, right: 30, bottom: 0,),
                             child: Container(
@@ -459,93 +508,104 @@ class _Home extends State<Home>{
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 25,),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 37,),
-                    child: Text(
-                      "오늘 마감이 아닌 일정",
-                      style: TextStyle(
-                        fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 115,
-                    child: ListView.builder( // 여기도 default 조건 넣어야함
-                      itemCount: sch.where((element) => element.timeLined == false && element.dueDate == now.toString().substring(0, 11)).isEmpty? 1 : sch.where((element) => element.timeLined == false && element.dueDate != now.toString().substring(0, 11)).length, // default,
-                      itemBuilder: (context, index) {
-                        return sch.isNotEmpty && sch[index].timeLined == false && sch[index].dueDate != now.toString().substring(0, 11)? InkWell( // card 1
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30, top: 10,),
-                            child: Container(
-                              width: 50,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey.shade400,
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 400,
-                                    child: Row(
+
+                  const SizedBox(height: 25,),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 37, bottom: 10,),
+                        child: Text("오늘 마감이 아닌 일정", style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),),
+                      ),
+
+                      sch.isNotEmpty && schNoToday.isNotEmpty?
+
+                      SizedBox(
+                        height: 115,
+                        child: ListView.builder( // 여기 default 조건 넣어야함
+                          itemCount: schNoToday.length,
+
+                          itemBuilder: (context, index) {
+                              return InkWell( // card 1
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 30, right: 30, top: 10,),
+                                  child: Container(
+                                    width: 50,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    child: Column(
                                       children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10, right: 230, top: 5,),
-                                          child: Icon(Icons.book_rounded,
-                                            color: Colors.white, size: 40,),
-                                        ),
-                                        IconButton(
-                                          onPressed:(){
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Detail(sch[index]),
+                                        SizedBox(
+                                          width: 400,
+                                          child: Row(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 10, right: 230, top: 5,),
+                                                child: Icon(Icons.book_rounded,
+                                                  color: Colors.white, size: 40,),
                                               ),
-                                            );
-                                          },
-                                          icon: Icon(Icons.more_vert,),
+                                              IconButton(
+                                                onPressed:(){
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => Detail(schNoToday[index]),
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.more_vert,),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20,),
+                                              child: Text(schNoToday[index].title),
+                                            ),
+                                            Expanded(child: Container(),),
+                                            Checkbox(
+                                              checkColor: Colors.white,
+                                              fillColor: MaterialStateProperty
+                                                  .resolveWith(getColor),
+                                              value: schNoToday[index].check,
+                                              onChanged: (bool? value) {
+                                                // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
+                                                // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
+                                                print('schedules/$uid/$dateformat');
+                                                final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc(schNoToday[index].title);
+                                                docRef.update({
+                                                  'check': value,
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(width : 5),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 20,),
-                                        child: Text(sch[index].title),
-                                      ),
-                                      Expanded(child: Container(),),
-                                      Checkbox(
-                                        checkColor: Colors.white,
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith(getColor),
-                                        value: sch[index].check,
-                                        onChanged: (bool? value) {
-                                          // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
-                                          // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
-                                          print('schedules/$uid/$dateformat');
-                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc('${sch[index].title}');
-                                          docRef.update({
-                                            'check': value,
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(width : 5),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ) :
-                        InkWell( // default
+                                ),
+                              );
+                          },
+                        ),
+                      )
+                      :
+                      SizedBox(
+                        width: 450,
+                        child: InkWell( // default
                           child: Padding(
                             padding: const EdgeInsets.only(left:30, right: 30, bottom: 0,),
                             child: Container(
@@ -553,29 +613,33 @@ class _Home extends State<Home>{
                               height: 100,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.red.shade200,
+                                color: Colors.blueAccent.shade100,
                               ),
                               child: InkWell(
                                 child: const Center(
                                   child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
                                 ),
                                 onTap: (){
-                                  Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
+                                  Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('tomorrow'));
                                 },
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 40,),
+
+                  const SizedBox(height: 20,),
                   Padding(
                     padding: EdgeInsets.only(left: 37,),
                     child: const Text("오늘 계획한 휴식", style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.bold),),
                   ),
                   const SizedBox(height: 10,),
+
+                  Rsch.isNotEmpty?
+
                   StreamBuilder<List<restModel>>(
                     stream: streamRestSch(),
                     builder:(context, snapshot) {
@@ -663,7 +727,37 @@ class _Home extends State<Home>{
                         );
                       }
                     },
+                  ) :
+                  SizedBox(
+                    width: 450,
+                    child: InkWell( // default
+                      child: Padding(
+                        padding: const EdgeInsets.only(left:30, right: 30, bottom: 0,),
+                        child: Container(
+                          width: 50,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.brown.shade200,
+                          ),
+                          child: InkWell(
+                            child: const Center(
+                              child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                            ),
+                            onTap: (){
+                              Navigator.pushNamed(context, '/recharge');
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
+
+                  const SizedBox(height: 40,),
+
+
+
+
                 ],
               );
             }

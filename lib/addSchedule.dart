@@ -37,235 +37,262 @@ class _AddSchedule extends State<AddSchedule>{
     final args = ModalRoute.of(context)!.settings.arguments as addScheduleArguments;
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 80,
+        title: Text('Add schedule ${args.date}', style: TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold,),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(args.date),
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: FormBuilder(
-          key: _formkey,
-          child: Column(
-            children: [
-              const SizedBox(height: 20,),
-              FormBuilderTextField(
-                autofocus: true,
-                focusNode: titleFocusNode,
-                name: 'title',
-                decoration: InputDecoration(
-                  hintStyle: TextStyle(color: Colors.grey[800]),
-                  hintText: "Title",
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  suffixIcon: IconButton(
-                    icon : Icon(Icons.clear),
-                    color: Colors.black38,
-                    onPressed: () {
-                      _formkey.currentState?.fields['title']?.reset();
-                      FocusScope.of(context).requestFocus(titleFocusNode);
-                    },
-                  ),
-                ),
-                validator: FormBuilderValidators.required(),
-                textInputAction: TextInputAction.next,
-                onSubmitted: (value) {
-                  FocusScope.of(context).requestFocus(memoFocusNode);
-                },
-              ),
-              const SizedBox(height: 20,),
-              FormBuilderTextField(
-                keyboardType: TextInputType.multiline,
-                minLines: 1,//Normal textInputField will be displayed
-                maxLines: 100,// when user presses enter it will adapt to it
-                name: 'memo',
-                focusNode: memoFocusNode,
-                decoration: InputDecoration(
-                  hintStyle: TextStyle(color: Colors.grey[800]),
-                  hintText: "memo",
-                  suffixIcon: IconButton(
-                    icon : Icon(Icons.clear),
-                    color: Colors.black38,
-                    onPressed: () {
-                      _formkey.currentState?.fields['memo']?.reset();
-                      FocusScope.of(context).requestFocus(memoFocusNode);
-                    },
-                  ),
-                ),
-                onSubmitted: (value) {
-                  FocusScope.of(context).unfocus();
-                },
-              ),
-              const SizedBox(height: 20,),
-              FormBuilderDateRangePicker(
-                name: "date_range",
-                firstDate: DateTime(2022),
-                lastDate: DateTime(2030),
-                format: DateFormat('yyyy-MM-dd'), // 2022-08-01
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon : Icon(Icons.clear),
-                    color: Colors.black38,
-                    onPressed: () { _formkey.currentState?.fields['date_range']?.reset();},
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20,),
-              FormBuilderCheckbox(
-                name: 'timeSet',
-                title: Text('시간 설정'),
-                onChanged: (value){
-                  if(value == true){
-                    setState(() {
-                      timeSet = true;
-                    });
-                  }
-                  else{
-                    setState(() {
-                      timeSet = false;
-                      _formkey.currentState?.fields['start_time']?.reset();
-                      _formkey.currentState?.fields['start_time']?.didChange(null);
-                      _formkey.currentState?.fields['end_time']?.reset();
-                      _formkey.currentState?.fields['end_time']?.didChange(null);
-                    });
-                  }
-                },
-              ),
-              timeSet
-                  ? FormBuilderDateTimePicker(
-                validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
-                name: 'start_time',
-                inputType: InputType.time,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon : Icon(Icons.clear),
-                    color: Colors.black38,
-                    onPressed: () {
-                      _formkey.currentState?.fields['start_time']?.reset();
-                      _formkey.currentState?.fields['start_time']?.didChange(null);
-                    },
-                  ),
-                ),
-              )
-                  : Container(),
-              timeSet
-                  ? FormBuilderDateTimePicker(
-                validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
-                name: 'end_time',
-                inputType: InputType.time,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon : Icon(Icons.clear),
-                    color: Colors.black38,
-                    onPressed: () {
-                      _formkey.currentState?.fields['end_time']?.reset();
-                      _formkey.currentState?.fields['end_time']?.didChange(null);
-                    },
-                  ),
-                ),
-              )
-                  : Container(),
-              FormBuilderSlider(
-                name: "rating",
-                initialValue: 0,
-                min: 0,
-                max: 10,
-                divisions: 10,
-                activeColor: Colors.blueAccent[100],
-                decoration: InputDecoration(
-                  //hintText: '중요도',
-                ),
-              ),
-              const SizedBox(height: 20,),
-              FormBuilderRadioGroup(
-                name: 'when',
-                options: <FormBuilderFieldOption>[
-                  FormBuilderFieldOption(
-                    value: 'when_today',
-                    child: Text('오늘 일정에 추가하기'),
-                  ),
-                  FormBuilderFieldOption(
-                    value: 'when_tomorrow',
-                    child: Text('내일 일정에 추가하기'),
-                  ),
-                  FormBuilderFieldOption(
-                    value: 'when_userSelect',
-                    child: FormBuilderDateTimePicker(
-                      name: 'when_selectedDate',
-                      inputType: InputType.date,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20,),
+        child: SingleChildScrollView(
+          child: FormBuilder(
+            key: _formkey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20,),
+                FormBuilderTextField(
+                  autofocus: true,
+                  focusNode: titleFocusNode,
+                  name: 'title',
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(color: Colors.grey[800]),
+                    hintText: "Title",
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    ),
+                    suffixIcon: IconButton(
+                      icon : Icon(Icons.clear),
+                      color: Colors.black38,
+                      onPressed: () {
+                        _formkey.currentState?.fields['title']?.reset();
+                        FocusScope.of(context).requestFocus(titleFocusNode);
+                      },
                     ),
                   ),
-                  FormBuilderFieldOption(
-                    value: 'when_later',
-                    child: Text('나중에 등록하기(단순 모듈 추가)'),
-                  ),
-                ],
-                validator: (value){
-                  FormBuilderValidators.required();
-                  return null;
-                },
-                initialValue: args.date != 'today' ? 'when_tomorrow': 'when_today',
-              ),
-              const SizedBox(height: 20,),
-              FormBuilderDropdown(
-                initialValue: '집',
-                name: 'where',
-                items: [
-                  DropdownMenuItem(
-                    value: '집',
-                    child: Row(
-                      children: [
-                        Text('집'),
-                        Icon(Icons.home_outlined),
-                      ],
+                  validator: FormBuilderValidators.required(),
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (value) {
+                    FocusScope.of(context).requestFocus(memoFocusNode);
+                  },
+                ),
+                const SizedBox(height: 20,),
+                FormBuilderTextField(
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,//Normal textInputField will be displayed
+                  maxLines: 100,// when user presses enter it will adapt to it
+                  name: 'memo',
+                  focusNode: memoFocusNode,
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(color: Colors.grey[800]),
+                    hintText: "memo",
+                    suffixIcon: IconButton(
+                      icon : Icon(Icons.clear),
+                      color: Colors.black38,
+                      onPressed: () {
+                        _formkey.currentState?.fields['memo']?.reset();
+                        FocusScope.of(context).requestFocus(memoFocusNode);
+                      },
                     ),
                   ),
-                  DropdownMenuItem(
-                    value: '학교',
-                    child: Row(
-                      children: [
-                        Text('학교'),
-                        Icon(Icons.school_outlined),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: '직장',
-                    child: Row(
-                      children: [
-                        Text('직장'),
-                        Icon(Icons.work_outline),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    child: Text('직접 입력'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20,),
-              Align(
-                alignment: Alignment(-0.9, 0.5),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
-                  ),
-                  onPressed: (){
-                    // Reset form
-                    _formkey.currentState?.reset();
-
-                    // Unfocus
+                  onSubmitted: (value) {
                     FocusScope.of(context).unfocus();
                   },
-                  child: Text('Reset'),
                 ),
-              ),
-              const SizedBox(height: 20,),
-            ],
+                const SizedBox(height: 20,),
+                FormBuilderDateRangePicker(
+                  name: "date_range",
+                  firstDate: DateTime(2022),
+                  lastDate: DateTime(2030),
+                  format: DateFormat('yyyy-MM-dd'), // 2022-08-01
+                  decoration: InputDecoration(
+                    hintText: "select date",
+                    suffixIcon: IconButton(
+                      icon : Icon(Icons.clear),
+                      color: Colors.black38,
+                      onPressed: () { _formkey.currentState?.fields['date_range']?.reset();},
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                FormBuilderCheckbox(
+                  name: 'timeSet',
+                  title: Text('시간 설정'),
+                  onChanged: (value){
+                    if(value == true){
+                      setState(() {
+                        timeSet = true;
+                      });
+                    }
+                    else{
+                      setState(() {
+                        timeSet = false;
+                        _formkey.currentState?.fields['start_time']?.reset();
+                        _formkey.currentState?.fields['start_time']?.didChange(null);
+                        _formkey.currentState?.fields['end_time']?.reset();
+                        _formkey.currentState?.fields['end_time']?.didChange(null);
+                      });
+                    }
+                  },
+                ),
+                timeSet
+                    ? FormBuilderDateTimePicker(
+                  validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
+                  name: 'start_time',
+                  inputType: InputType.time,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon : Icon(Icons.clear),
+                      color: Colors.black38,
+                      onPressed: () {
+                        _formkey.currentState?.fields['start_time']?.reset();
+                        _formkey.currentState?.fields['start_time']?.didChange(null);
+                      },
+                    ),
+                  ),
+                )
+                    : Container(),
+                timeSet
+                    ? FormBuilderDateTimePicker(
+                  validator: _formkey.currentState?.fields['timeSet']?.value ? FormBuilderValidators.required():null,
+                  name: 'end_time',
+                  inputType: InputType.time,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon : Icon(Icons.clear),
+                      color: Colors.black38,
+                      onPressed: () {
+                        _formkey.currentState?.fields['end_time']?.reset();
+                        _formkey.currentState?.fields['end_time']?.didChange(null);
+                      },
+                    ),
+                  ),
+                )
+                    : Container(),
+                const Divider(
+                  height: 20,
+                  thickness: 1,
+                  indent: 0,
+                  endIndent: 0,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 10,),
+                const SizedBox(child: Text("Set importancy"),),
+                FormBuilderSlider(
+                  name: "rating",
+                  initialValue: 0,
+                  min: 0,
+                  max: 10,
+                  divisions: 10,
+                  activeColor: Colors.blueAccent[100],
+                  decoration: InputDecoration(
+                    //hintText: '중요도',
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                const SizedBox(child: Text("Set day to do"),),
+                FormBuilderRadioGroup(
+                  name: 'when',
+                  options: <FormBuilderFieldOption>[
+                    FormBuilderFieldOption(
+                      value: 'when_today',
+                      child: Text('오늘 일정에 추가하기'),
+                    ),
+                    FormBuilderFieldOption(
+                      value: 'when_tomorrow',
+                      child: Text('내일 일정에 추가하기'),
+                    ),
+                    FormBuilderFieldOption(
+                      value: 'when_userSelect',
+                      child: FormBuilderDateTimePicker(
+                        name: 'when_selectedDate',
+                        inputType: InputType.date,
+                      ),
+                    ),
+                    FormBuilderFieldOption(
+                      value: 'when_later',
+                      child: Text('나중에 등록하기(단순 모듈 추가)'),
+                    ),
+                  ],
+                  validator: (value){
+                    FormBuilderValidators.required();
+                    return null;
+                  },
+                  initialValue: args.date != 'today' ? 'when_tomorrow': 'when_today',
+                ),
+                const SizedBox(height: 20,),
+                const SizedBox(child: Text("Set location"),),
+                const SizedBox(height: 10,),
+                FormBuilderDropdown(
+                  initialValue: '집',
+                  name: 'where',
+                  items: [
+                    DropdownMenuItem(
+                      value: '집',
+                      child: Row(
+                        children: [
+                          Text('집'),
+                          Icon(Icons.home_outlined),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: '학교',
+                      child: Row(
+                        children: [
+                          Text('학교'),
+                          Icon(Icons.school_outlined),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: '직장',
+                      child: Row(
+                        children: [
+                          Text('직장'),
+                          Icon(Icons.work_outline),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      child: Text('직접 입력'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20,),
+                Align(
+                  alignment: Alignment(-0.9, 0.5),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+                    ),
+                    onPressed: (){
+                      // Reset form
+                      _formkey.currentState?.reset();
+
+                      // Unfocus
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: Text('Reset'),
+                  ),
+                ),
+                const SizedBox(height: 20,),
+              ],
+            ),
+            onChanged: (){print("Form has been changed");},
+            autovalidateMode: AutovalidateMode.disabled,
+            initialValue: {
+            },
           ),
-          onChanged: (){print("Form has been changed");},
-          autovalidateMode: AutovalidateMode.disabled,
-          initialValue: {
-          },
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -390,8 +417,12 @@ class _AddSchedule extends State<AddSchedule>{
               ElevatedButton(
                 child: const Text("종료"),
                 onPressed: () {
-                  Navigator.pop(context); // pop dialog
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Home(),
+                    ),
+                  );
                 },
               ),
               ElevatedButton(
