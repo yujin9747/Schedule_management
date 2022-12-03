@@ -647,7 +647,6 @@ class _Home extends State<Home>{
                   ),
                   const SizedBox(height: 10,),
 
-                  Rsch.isNotEmpty?
 
                   StreamBuilder<List<restModel>>(
                     stream: streamRestSch(),
@@ -664,7 +663,8 @@ class _Home extends State<Home>{
                       } else {
                         Rsch = snapshot.data!;
                         print("rest length : ${Rsch.length}");
-                        return CarouselSlider.builder(
+
+                        return Rsch.isNotEmpty? CarouselSlider.builder(
                           itemCount: Rsch.length,
                           itemBuilder: (BuildContext context, int index, int realIndex) {
                             return SizedBox(
@@ -702,7 +702,7 @@ class _Home extends State<Home>{
                                           TextButton(
                                             child: Text("delete", style: TextStyle(color:Colors.black38,),),
                                             onPressed:(){
-                                              final delRef = FirebaseFirestore.instance.collection("rests/$uid/$dateformat").doc("${sch[index].title}");
+                                              final delRef = FirebaseFirestore.instance.collection("rests/$uid/$dateformat").doc(Rsch[index].title);
                                               delRef.delete();
                                             },
                                           ),
@@ -733,33 +733,33 @@ class _Home extends State<Home>{
                             //onPageChanged: callbackFunction,
                             scrollDirection: Axis.horizontal,
                           ),
+                        ) :
+                        SizedBox(
+                          width: 450,
+                          child: InkWell( // default
+                            child: Padding(
+                              padding: const EdgeInsets.only(left:30, right: 30, bottom: 0,),
+                              child: Container(
+                                width: 50,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.brown.shade200,
+                                ),
+                                child: InkWell(
+                                  child: const Center(
+                                    child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                  ),
+                                  onTap: (){
+                                    Navigator.pushNamed(context, '/recharge');
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
                         );
                       }
                     },
-                  ) :
-                  SizedBox(
-                    width: 450,
-                    child: InkWell( // default
-                      child: Padding(
-                        padding: const EdgeInsets.only(left:30, right: 30, bottom: 0,),
-                        child: Container(
-                          width: 50,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.brown.shade200,
-                          ),
-                          child: InkWell(
-                            child: const Center(
-                              child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
-                            ),
-                            onTap: (){
-                              Navigator.pushNamed(context, '/recharge');
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
 
                   const SizedBox(height: 40,),
