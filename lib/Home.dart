@@ -198,7 +198,14 @@ class _Home extends State<Home>{
                               padding: EdgeInsets.only(top: 20, left: 20,),
                               child:
                               sch.isEmpty?
-                              Text('$id님 아직 일정이 없습니다. 일정을 추가해 주세요.') : //default
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('$id님', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold,),),
+                                  Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white,),)
+                                ],
+                              ) : //default
                               Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,),),
                             ),
                           ),
@@ -206,7 +213,9 @@ class _Home extends State<Home>{
                             alignment: Alignment.bottomLeft,
                             child: Padding(
                               padding: EdgeInsets.only(top: 10, left: 20,),
-                              child: Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,),),
+                              child: sch.isEmpty?
+                              const Text("일정을 추가하면\n오늘의 상세 내용을 볼 수 있습니다!", style: TextStyle(color: Colors.black,),)    :
+                              Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,),),
                             ),
                           ),
                         ],
