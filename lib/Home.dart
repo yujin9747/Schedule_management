@@ -202,8 +202,8 @@ class _Home extends State<Home>{
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('$id님', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold,),),
-                                  Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white,),)
+                                  Text('$id님', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold,),),
+                                  Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white, fontSize: 15,),)
                                 ],
                               ) : //default
                               Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,),),
@@ -393,7 +393,7 @@ class _Home extends State<Home>{
                                   ),
                                   child: InkWell(
                                       child: const Center(
-                                          child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                          child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
                                       ),
                                       onTap: (){
                                         Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
@@ -433,7 +433,7 @@ class _Home extends State<Home>{
                                     height: 100,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Colors.grey.shade400,
+                                      color: const Color.fromRGBO(248, 249, 136, 1),
                                     ),
                                     child: Column(
                                       children: [
@@ -445,7 +445,7 @@ class _Home extends State<Home>{
                                                 padding: EdgeInsets.only(
                                                   left: 10, right: 230, top: 5,),
                                                 child: Icon(Icons.book_rounded,
-                                                  color: Colors.white, size: 40,),
+                                                  color: Colors.black, size: 40,),
                                               ),
                                               IconButton(
                                                 onPressed:(){
@@ -509,7 +509,7 @@ class _Home extends State<Home>{
                               ),
                               child: InkWell(
                                 child: const Center(
-                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
                                 ),
                                 onTap: (){
                                   Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
@@ -550,7 +550,7 @@ class _Home extends State<Home>{
                                     height: 100,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Colors.grey.shade400,
+                                      color: const Color.fromRGBO(255, 202, 200, 1),
                                     ),
                                     child: Column(
                                       children: [
@@ -562,7 +562,7 @@ class _Home extends State<Home>{
                                                 padding: EdgeInsets.only(
                                                   left: 10, right: 230, top: 5,),
                                                 child: Icon(Icons.book_rounded,
-                                                  color: Colors.white, size: 40,),
+                                                  color: Colors.black, size: 40,),
                                               ),
                                               IconButton(
                                                 onPressed:(){
@@ -626,7 +626,7 @@ class _Home extends State<Home>{
                               ),
                               child: InkWell(
                                 child: const Center(
-                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
                                 ),
                                 onTap: (){
                                   Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('tomorrow'));
@@ -688,7 +688,7 @@ class _Home extends State<Home>{
                                             // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
                                             // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
                                             print('rests/$uid/$dateformat');
-                                            final docRef = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').doc('${Rsch[index].title}');
+                                            final docRef = FirebaseFirestore.instance.collection('rests/$uid/$dateformat').doc(Rsch[index].title);
                                             docRef.update({
                                               'check': value,
                                             });
@@ -700,7 +700,7 @@ class _Home extends State<Home>{
                                         //mainAxisAlignment: MainAxisAlignment.end,
                                         child:
                                           TextButton(
-                                            child: Text("delete", style: TextStyle(color:Colors.black38,),),
+                                            child: const Text("delete", style: TextStyle(color:Colors.black38,),),
                                             onPressed:(){
                                               final delRef = FirebaseFirestore.instance.collection("rests/$uid/$dateformat").doc(Rsch[index].title);
                                               delRef.delete();
@@ -748,7 +748,7 @@ class _Home extends State<Home>{
                                 ),
                                 child: InkWell(
                                   child: const Center(
-                                    child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white,),),
+                                    child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
                                   ),
                                   onTap: (){
                                     Navigator.pushNamed(context, '/recharge');
