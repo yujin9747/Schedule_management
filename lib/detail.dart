@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:scheduling/schModel.dart';
 
 import 'edit.dart';
-import 'edit_test.dart';
 
 class Detail extends StatelessWidget {
   final schModel sch;
