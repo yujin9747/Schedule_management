@@ -104,7 +104,7 @@ class _AddModule extends State<AddModule>{
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text("등록되지 않은 일정이 없습니다."),
                               Text("일정 모듈을 추가하세요."),
                             ]
