@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -216,14 +217,42 @@ class _CloseDay extends State<CloseDay>{
               ),
             ),
             const SizedBox(height: 10,),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
+            Padding(
+              padding: EdgeInsets.only(left: 150, right:  150,),
+              child: TextButton(
+                onPressed: (){
+                  final snackBar = SnackBar(
+                    elevation: 0,
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.transparent,
+                    content: AwesomeSnackbarContent(
+                      title: '하루 마무리!',
+                      message:
+                      '하루를 마무리했습니다. :)',
+
+                      contentType: ContentType.success,
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(snackBar);
+
                   Navigator.pop(context);
                 },
-                child: Text("하루 마무리 하기"),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: const BorderSide(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               ),
-            )
+            ),
           ],
         ),
       ),
