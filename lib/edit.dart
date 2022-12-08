@@ -6,12 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:intl/intl.dart';
 import 'package:scheduling/schModel.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 import 'Home.dart';
-import 'detail.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class Edit extends StatefulWidget{
@@ -24,7 +21,6 @@ class Edit extends StatefulWidget{
 }
 
 class _Edit extends State<Edit>{
-  final _formkey = GlobalKey<FormBuilderState>();
   late bool timeSet = false;
   FocusNode titleFocusNode = FocusNode();
   FocusNode memoFocusNode = FocusNode();
@@ -152,6 +148,10 @@ class _Edit extends State<Edit>{
           Padding(
             padding: EdgeInsets.only(left: 120, right: 120,),
             child: Card(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Colors.transparent, width: 0),
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: ListTile(
                 title: Row(children: [SizedBox(width: 20,),Text('Delete', style: TextStyle(color: Colors.white),),]),
                 trailing: Icon(Icons.delete),
@@ -187,10 +187,6 @@ class _Edit extends State<Edit>{
                   side: BorderSide(color: Colors.transparent, width: 0),
                   borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: Colors.transparent, width: 0),
-                borderRadius: BorderRadius.circular(20),
               ),
             ),
           ),
@@ -275,17 +271,17 @@ class edtitle extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
             ),
           ),
         ],
@@ -368,17 +364,17 @@ class edmemo extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
             ),
           ),
         ],
@@ -437,9 +433,6 @@ class eddate extends StatelessWidget {
                       ref.update({
                         'startDate': val.toString(),
                       });
-                      const snackbar = SnackBar(
-                        content: Text("Success : 시작 날짜가 수정되었습니다"),);
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     },
                     validator: (val) {
                       print(val);
@@ -457,9 +450,6 @@ class eddate extends StatelessWidget {
                       ref.update({
                         'dueDate': val.toString(),
                       });
-                      const snackbar = SnackBar(
-                        content: Text("Success : due 날짜가 수정되었습니다"),);
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     },
                     validator: (val) {
                       print(val);
@@ -472,7 +462,7 @@ class eddate extends StatelessWidget {
           ),
           const SizedBox(height: 50,),
           Padding(
-            padding: EdgeInsets.only(left: 150, right: 150,),
+            padding: const EdgeInsets.only(left: 150, right: 150,),
             child: TextButton(
               onPressed: () {
                 final snackBar = SnackBar(
@@ -503,7 +493,7 @@ class eddate extends StatelessWidget {
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.black,
                     ),
                   ),
@@ -646,7 +636,7 @@ class edtime extends StatelessWidget {
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          side: BorderSide(
+                          side: const BorderSide(
                             color: Colors.black,
                           ),
                         ),
@@ -711,9 +701,6 @@ class edimpt extends StatelessWidget {
               max: 10,
               divisions: 10,
               activeColor: Colors.blueAccent[100],
-              decoration: InputDecoration(
-                //hintText: '중요도',
-              ),
               onChanged: (value){
                 ref.update({
                   'importance': value?.toInt(),
@@ -723,7 +710,7 @@ class edimpt extends StatelessWidget {
           ),
           const SizedBox(height: 50,),
           Padding(
-            padding: EdgeInsets.only(left: 150, right:  150,),
+            padding: const EdgeInsets.only(left: 150, right:  150,),
             child: TextButton(
               onPressed: (){
                 final snackBar = SnackBar(
@@ -749,17 +736,17 @@ class edimpt extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
             ),
           ),
         ],
@@ -771,7 +758,6 @@ class edimpt extends StatelessWidget {
 class edloc extends StatelessWidget {
   final schModel sch;
   edloc(this.sch, {Key? key}) : super(key: key);
-  final _text = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -811,7 +797,7 @@ class edloc extends StatelessWidget {
                 DropdownMenuItem(
                   value: '집',
                   child: Row(
-                    children: [
+                    children: const [
                       Text('집'),
                       Icon(Icons.home_outlined),
                     ],
@@ -820,7 +806,7 @@ class edloc extends StatelessWidget {
                 DropdownMenuItem(
                   value: '학교',
                   child: Row(
-                    children: [
+                    children: const [
                       Text('학교'),
                       Icon(Icons.school_outlined),
                     ],
@@ -829,13 +815,13 @@ class edloc extends StatelessWidget {
                 DropdownMenuItem(
                   value: '직장',
                   child: Row(
-                    children: [
+                    children: const [
                       Text('직장'),
                       Icon(Icons.work_outline),
                     ],
                   ),
                 ),
-                DropdownMenuItem(
+                const DropdownMenuItem(
                   child: Text('직접 입력'),
                 ),
               ],
@@ -848,7 +834,7 @@ class edloc extends StatelessWidget {
           ),
           const SizedBox(height: 50,),
           Padding(
-            padding: EdgeInsets.only(left: 150, right:  150,),
+            padding: const EdgeInsets.only(left: 150, right:  150,),
             child: TextButton(
               onPressed: (){
                 final snackBar = SnackBar(
@@ -874,17 +860,17 @@ class edloc extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
             ),
           ),
         ],

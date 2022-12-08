@@ -50,7 +50,17 @@ class _CloseDay extends State<CloseDay>{
     print("close day list rest length : ${listRest.length}");
     return Scaffold(
       appBar: AppBar(
-        title: Text("하루 마무리 짓기"),
+        toolbarHeight: 80,
+        title: Text('오늘 하루를 마무리 해보아요 :)', style: TextStyle(fontSize: 30, color: Colors.black),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(15),
