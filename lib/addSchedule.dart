@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -385,8 +386,22 @@ class _AddSchedule extends State<AddSchedule>{
                     "where" : where,
                     "check" : false,
                   });
-                  const snackbar = SnackBar(content: Text("Success : 일정이 추가되었습니다"),);
-                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                  final snackBar = SnackBar(
+                    elevation: 0,
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.transparent,
+                    content: AwesomeSnackbarContent(
+                      title: '일정 추가!',
+                      message:
+                      '일정이 추가되었습니다. :)',
+
+                      contentType: ContentType.success,
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(snackBar);
                   Navigator.pop(context);
                   showAddMoreDialog();
                 },

@@ -4,18 +4,13 @@ import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:scheduling/Recharge.dart';
 import 'package:scheduling/restModel.dart';
 import 'package:scheduling/schModel.dart';
 import 'detail.dart';
-import 'login.dart';
-import 'timeline.dart';
 
 var now = DateTime.now();
 
@@ -127,7 +122,7 @@ class _Home extends State<Home>{
               }
             ),
             DrawerList(text: '홈', icon: Icons.home, route:'/'),
-            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            //DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
             DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
             DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
@@ -629,7 +624,7 @@ class _Home extends State<Home>{
                                   child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
                                 ),
                                 onTap: (){
-                                  Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('tomorrow'));
+                                  Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
                                 },
                               ),
                             ),

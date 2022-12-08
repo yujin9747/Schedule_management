@@ -10,7 +10,6 @@ import 'Recharge.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'addModule.dart';
 import 'closeDay.dart';
-import 'detail.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +39,6 @@ class MyApp extends StatelessWidget {
         '/tomorrow':(context) => Tomorrow(),
         '/addModule':(context) => AddModule(),
         '/closeDay':(context) => CloseDay(),
-        //'/detail':(context)=> Detail(),
       },
       debugShowCheckedModeBanner: false,
     );
