@@ -14,13 +14,20 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(0, 190, 115, 1),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            const SizedBox(height: 80.0),
+            const SizedBox(height: 150.0),
+            Container(
+              height: 153,
+
+              child: Image.asset('assets/app.jpg', fit: BoxFit.fitHeight,),
+            ),
+            const SizedBox(height: 60.0),
             FutureBuilder(
-              future: Authentication.initializeFirebase(context: context),
+              future: Authentication.initializeFirebase(context: context,),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Text('Error initializing Firebase');
