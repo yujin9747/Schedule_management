@@ -11,9 +11,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:scheduling/restModel.dart';
 import 'package:scheduling/schModel.dart';
 import 'detail.dart';
-
-import 'login.dart';
-import 'timeline.dart';
 import 'package:timer_builder/timer_builder.dart';
 
 var now = DateTime.now();
