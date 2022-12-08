@@ -23,20 +23,12 @@ class _LoginState extends State<Login> {
               future: Authentication.initializeFirebase(context: context),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Text('Error initializing Firebase');
-                }else return GoogleSignInButton();
+                  return const Text('Error initializing Firebase');
+                }else {
+                  return const GoogleSignInButton();
+                }
               },
             ),
-            // ElevatedButton(
-            //   onPressed : ()async{
-            //     User? user = await Authentication.signInAnonymously(context: context);
-            //     if (user != null) {
-            //       print('user id : '+ user.uid);
-            //       Navigator.pop(context);
-            //     }
-            //   },
-            //   child: Text('anonymously login'),
-            // ),
           ],
         ),
       ),
@@ -45,6 +37,8 @@ class _LoginState extends State<Login> {
 }
 
 class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({super.key});
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
