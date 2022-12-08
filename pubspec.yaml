@@ -46,7 +46,6 @@ dependencies:
   flutter_form_builder: ^7.7.0
   form_builder_validators: ^8.4.0
   cloud_firestore: ^3.5.1
-  timelines: ^0.1.0
   percent_indicator: ^4.2.2
   table_calendar: ^3.0.8
   date_time_picker: ^2.1.0
