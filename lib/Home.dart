@@ -328,6 +328,7 @@ class _Home extends State<Home>{
                                                       Expanded(child: Container()),
                                                       IconButton(
                                                         onPressed: (){
+                                                          print(schYTime.length);
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
