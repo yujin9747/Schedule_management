@@ -95,79 +95,83 @@ class _monthlySchedule extends State<monthlySchedule>{
               color: Colors.black
           ),
           Padding(padding: EdgeInsets.only(left: 20, top: 10,),child: Text("일정 List", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,),)),
-          Padding(
-            padding: EdgeInsets.only(left: 30, top: 10,),
-            child: Column(
-              children: [
-
-                StreamBuilder<List<schModel>>(
-
-                    stream: streamSch(_selectedDay),
-                    builder: (context, snapshot){
-                      if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
-                        return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
-                      } else if (snapshot.hasError) {
-                        return const Center(
-                          child: Text('오류가 발생했습니다.'),
-                        );
-                      }else{
-                        sch = snapshot.data!;
-                        return
-                          sch.isNotEmpty?
-                          Container(
+          StreamBuilder<List<schModel>>(
+            stream: streamSch(_selectedDay),
+            builder: (context, snapshot){
+              if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
+                return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('오류가 발생했습니다.'),
+                );
+              }else{
+                sch = snapshot.data!;
+                return sch.isNotEmpty?
+                    Padding(
+                        padding: EdgeInsets.only(left: 30, top: 10,),
+                        child: Column(
+                          children: [
+                            Container(
                             height: 220,
                             child: ListView.builder(
-                              itemCount: sch.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(right: 20,),
-                                  child: Card(
-                                    elevation: 0,
-                                    child: ListTile(
-                                      title:
-                                      Row(
-                                        children: [
-                                          Text(sch[index].title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,)),
-                                          Flexible(
-                                            fit: FlexFit.tight,
-                                            child: Container(
-                                              width: 50,
+                                itemCount: sch.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 20,),
+                                    child: Card(
+                                      elevation: 0,
+                                      child: ListTile(
+                                        title:
+                                        Row(
+                                            children: [
+                                              Text(sch[index].title,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,)),
+                                              Flexible(
+                                                fit: FlexFit.tight,
+                                                child: Container(
+                                                  width: 50,
+                                                ),
+                                              ),
+                                              sch[index].timeLined ?
+                                              Column(children: [
+                                                Text(sch[index].startTime,),
+                                                Text(sch[index].endTime,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),),
+                                              ])
+                                                  : Container(),
+                                            ]
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Detail(sch[index]),
                                             ),
-                                          ),
-                                          sch[index].timeLined?
-                                              Column(children: [Text(sch[index].startTime,), Text(sch[index].endTime , style: TextStyle(color: Colors.grey),),])
-                                              : Container(),
-                                        ]
+                                          );
+                                        },
                                       ),
-                                      onTap: (){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Detail(sch[index]),
-                                          ),
-                                        );
-                                      },
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                }
+                              ),
                             ),
-                          ) :
-                          Padding(
-                            padding: EdgeInsets.only(right: 20,),
-                              child:
-                                Card(
-                                  elevation: 0,
-                                  child: ListTile(
-                                    title: Center(child: Text('일정이 없습니다!')),
-                                  ),
-                                ),
-                          );
-                      }
-                    }
-                ),
-              ]
-            ),
+                          ],
+                        ),
+                    )
+                    :
+                const SizedBox(
+                  height: 150,
+                  child:
+                  Center(
+                    child: Text('일정이 없습니다!'),
+                  ),
+                );
+              }
+            }
           ),
         ],
       ),
