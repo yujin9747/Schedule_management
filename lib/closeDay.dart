@@ -52,7 +52,7 @@ class _CloseDay extends State<CloseDay>{
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        title: Text('오늘 하루를 마무리 해보아요 :)', style: TextStyle(fontSize: 30, color: Colors.black),),
+        title: Text('하루 마무리', style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold,),),
         elevation: 0.0,
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -72,7 +72,7 @@ class _CloseDay extends State<CloseDay>{
             const SizedBox(height: 10,),
             Text("내일로 미루고자 하는 일정에", style: TextStyle(fontWeight: FontWeight.bold),),
             Text("체크 표시를 한 후 확인을 눌러주세요.", style: TextStyle(fontWeight: FontWeight.bold),),
-            const SizedBox(height: 10,),
+            const SizedBox(height: 20,),
             Center(child: Text("< 일과 >", style: TextStyle(fontWeight: FontWeight.bold),)),
             Expanded(
               child: ListView.builder(
@@ -168,6 +168,7 @@ class _CloseDay extends State<CloseDay>{
                 },
               ),
             ),
+            const SizedBox(height: 20,),
             Center(child: Text("< 휴식 >", style:TextStyle(fontWeight: FontWeight.bold),),),
             Expanded(
               child: ListView.builder(
