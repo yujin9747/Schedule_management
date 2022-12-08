@@ -287,7 +287,7 @@ class _Home extends State<Home>{
                       Padding( // time line
                         padding: const EdgeInsets.only(left: 30, bottom: 30,),
                         child: SizedBox(
-                          height: 270,
+                          height: schYTime.length == 1? 135 : 270,
                           child :
                           ListView.builder(
                             itemCount: schYTime.length,
@@ -424,7 +424,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoTime.isNotEmpty?
 
                       SizedBox(
-                        height: 160,
+                        height: schNoTime.length == 1? 110 : 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoTime.length,
 
@@ -541,7 +541,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoToday.isNotEmpty?
 
                       SizedBox(
-                        height: 160,
+                        height: schNoToday.length == 1? 110 : 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoToday.length,
 
