@@ -124,7 +124,7 @@ class _Home extends State<Home>{
             ),
             DrawerList(text: '홈', icon: Icons.home, route:'/'),
             DrawerList(text: '로그아웃', icon: Icons.logout, route:'/login'),
-            //DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
             DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
             DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
