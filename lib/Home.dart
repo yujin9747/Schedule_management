@@ -127,6 +127,7 @@ class _Home extends State<Home>{
               }
             ),
             DrawerList(text: '홈', icon: Icons.home, route:'/'),
+            DrawerList(text: '로그아웃', icon: Icons.logout, route:'/login'),
             DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
             DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
@@ -876,9 +877,14 @@ class DrawerList extends StatelessWidget{
         print('${text} is clicked');
         Navigator.pop(context);
         if(route != '/') {
-          if(text == '오늘 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
-          else if(text == '내일 일정 추가하기') Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
-          else {
+          if (text == '오늘 일정 추가하기') {
+            Navigator.pushNamed(context, route, arguments: addScheduleArguments('today'));
+          } else if (text == '내일 일정 추가하기') {
+            Navigator.pushNamed(context, route, arguments: addScheduleArguments('tomorrow'));
+          } else if (text == '로그아웃'){
+            FirebaseAuth.instance.signOut();
+            Navigator.pushNamed(context, route);
+          } else {
             Navigator.pushNamed(context, route);
           }
         }
