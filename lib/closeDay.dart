@@ -130,8 +130,22 @@ class _CloseDay extends State<CloseDay>{
                                       "where" : list[index].where,
                                       "check" : false,
                                     });
-                                    const snackbar = SnackBar(content: Text("Success : 내일 일정에 추가되었습니다"),);
-                                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                                    final snackBar = SnackBar(
+                                      elevation: 0,
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Colors.transparent,
+                                      content: AwesomeSnackbarContent(
+                                        title: '완료',
+                                        message:
+                                        '내일 일정에 추가되었습니다!',
+
+                                        contentType: ContentType.success,
+                                      ),
+                                    );
+
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(snackBar);
                                   },
                                   icon: Icon(Icons.add),
                                 ),
@@ -192,8 +206,22 @@ class _CloseDay extends State<CloseDay>{
                                       "dayToDo" : dateformatTomorrow,
                                       "check" : false,
                                     });
-                                    const snackbar = SnackBar(content: Text("Success : 내일 휴식에 추가되었습니다"),);
-                                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                                    final snackBar = SnackBar(
+                                      elevation: 0,
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Colors.transparent,
+                                      content: AwesomeSnackbarContent(
+                                        title: '완료',
+                                        message:
+                                        '내일 휴식에 추가되었습니다!',
+
+                                        contentType: ContentType.success,
+                                      ),
+                                    );
+
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(snackBar);
                                   },
                                   icon: Icon(Icons.add),
                                 ),
@@ -221,23 +249,6 @@ class _CloseDay extends State<CloseDay>{
               padding: EdgeInsets.only(left: 150, right:  150,),
               child: TextButton(
                 onPressed: (){
-                  final snackBar = SnackBar(
-                    elevation: 0,
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.transparent,
-                    content: AwesomeSnackbarContent(
-                      title: '하루 마무리!',
-                      message:
-                      '하루를 마무리했습니다. :)',
-
-                      contentType: ContentType.success,
-                    ),
-                  );
-
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(snackBar);
-
                   Navigator.pop(context);
                 },
                 style: ButtonStyle(
