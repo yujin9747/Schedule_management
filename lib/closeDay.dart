@@ -70,17 +70,18 @@ class _CloseDay extends State<CloseDay>{
           children: [
             Text("오늘 하루 마무리 하지 못한 일정입니다.", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             const SizedBox(height: 10,),
-            Text("내일로 미루고자 하는 일정에", style: TextStyle(fontWeight: FontWeight.bold),),
-            Text("체크 표시를 한 후 확인을 눌러주세요.", style: TextStyle(fontWeight: FontWeight.bold),),
-            const SizedBox(height: 20,),
-            Center(child: Text("< 일과 >", style: TextStyle(fontWeight: FontWeight.bold),)),
+            Text("내일에도 추가하고자 하는 일정에", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
+            Text("플러스 버튼을 눌러주세요.", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
+            const SizedBox(height: 30,),
+            Padding(padding: EdgeInsets.only(left: 35,),child: Text("< 일과 >", style: TextStyle(fontWeight: FontWeight.bold),)),
+            const SizedBox(height: 10,),
             Expanded(
               child: ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
                   return list[index].check == false ? Padding(
                     padding: EdgeInsets.only(
-                      left: 30, right: 30, top: 15,),
+                      left: 30, right: 30, bottom: 15,),
                     child: Container(
                       width: 50,
                       height: 100,
@@ -169,14 +170,15 @@ class _CloseDay extends State<CloseDay>{
               ),
             ),
             const SizedBox(height: 20,),
-            Center(child: Text("< 휴식 >", style:TextStyle(fontWeight: FontWeight.bold),),),
+            Padding(padding: EdgeInsets.only(left: 35,),child: Text("< 휴식 >", style: TextStyle(fontWeight: FontWeight.bold),)),
+            const SizedBox(height: 10,),
             Expanded(
               child: ListView.builder(
                 itemCount: listRest.length,
                 itemBuilder: (BuildContext context, int index) {
                   return listRest[index].check == false ? Padding(
                     padding: EdgeInsets.only(
-                      left: 30, right: 30, top: 15,),
+                      left: 30, right: 30, bottom: 15,),
                     child: Container(
                       width: 50,
                       height: 100,
@@ -246,8 +248,7 @@ class _CloseDay extends State<CloseDay>{
               ),
             ),
             const SizedBox(height: 10,),
-            Padding(
-              padding: EdgeInsets.only(left: 150, right:  150,),
+            Center(
               child: TextButton(
                 onPressed: (){
                   Navigator.pop(context);
@@ -265,6 +266,7 @@ class _CloseDay extends State<CloseDay>{
                 child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
               ),
             ),
+            const SizedBox(height: 15,),
           ],
         ),
       ),
