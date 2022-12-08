@@ -101,6 +101,7 @@ class _Edit extends State<Edit>{
             ),
           ),
 
+          widget.sch.timeLined == true?
           Card(
             child: ListTile(
               title: Text('Edit time'),
@@ -114,7 +115,7 @@ class _Edit extends State<Edit>{
                 );
               },
             ),
-          ),
+          ): Container(),
 
           Card(
             child: ListTile(
