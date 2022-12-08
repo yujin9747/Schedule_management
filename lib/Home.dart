@@ -211,50 +211,64 @@ class _Home extends State<Home>{
                           ),
                         );
                       }
-                      else return Padding(
+                      else {
+                        return Padding(
                         padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
-                        child: Container(
-                          width: 50,
-                          height: 320,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.deepPurple,
-                          ),
-                          child: Column( // percentage
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 10,),
-                              sch.isEmpty? Container() : Progress(),
-                              Align( // text1
-                                alignment: Alignment.bottomLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 20, left: 20,),
-                                  child:
-                                  sch.isEmpty?
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('$id님', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold,),),
-                                      Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white,),)
-                                    ],
-                                  ) : //default
-                                  Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,),),
+                        child: InkWell(
+                          child: Container(
+                            width: 50,
+                            height: 320,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepPurple,
+                            ),
+                            child: Column( // percentage
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 10,),
+                                sch.isEmpty? Container() : Progress(),
+                                Align( // text1
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 20, left: 20,),
+                                    child:
+                                    sch.isEmpty?
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('$id님', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold,),),
+                                        Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
+                                      ],
+                                    ) : //default
+                                    Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                                  ),
                                 ),
-                              ),
-                              Align( // text2
-                                alignment: Alignment.bottomLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 10, left: 20,),
-                                  child: sch.isEmpty?
-                                  const Text("일정을 추가하면\n오늘의 상세 내용을 볼 수 있습니다!", style: TextStyle(color: Colors.black,),)    :
-                                  Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,),),
+                                Align( // text2
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 10, left: 20,),
+                                    child: sch.isEmpty?
+                                    const Text("일정을 추가하면\n오늘의 상세 내용을 볼 수 있습니다!", style: TextStyle(color: Color.fromRGBO(237, 210, 252, 100),fontWeight: FontWeight.bold),)    :
+                                    Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Align( // text3
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 10, right: 20,),
+                                    child: sch.isEmpty ? Container():Text("일정 마무리 >>", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          onTap: (){
+                            Navigator.pushNamed(context, "/closeDay", arguments:closeDayArguments(sch, Rsch));
+                          },
                         ),
                       );
+                      }
                     },
                   ),
                   const SizedBox(height: 30,),
@@ -273,7 +287,7 @@ class _Home extends State<Home>{
                       Padding( // time line
                         padding: const EdgeInsets.only(left: 30, bottom: 30,),
                         child: SizedBox(
-                          height: 125,
+                          height: 270,
                           child :
                           ListView.builder(
                             itemCount: schYTime.length,
@@ -384,7 +398,7 @@ class _Home extends State<Home>{
                                   ),
                                   child: InkWell(
                                       child: const Center(
-                                          child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
+                                          child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
                                       ),
                                       onTap: (){
                                         Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
@@ -410,7 +424,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoTime.isNotEmpty?
 
                       SizedBox(
-                        height: 135,
+                        height: 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoTime.length,
 
@@ -500,7 +514,7 @@ class _Home extends State<Home>{
                               ),
                               child: InkWell(
                                 child: const Center(
-                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
+                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
                                 ),
                                 onTap: (){
                                   Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
@@ -527,7 +541,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoToday.isNotEmpty?
 
                       SizedBox(
-                        height: 135,
+                        height: 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoToday.length,
 
@@ -617,7 +631,7 @@ class _Home extends State<Home>{
                               ),
                               child: InkWell(
                                 child: const Center(
-                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
+                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
                                 ),
                                 onTap: (){
                                   Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('today'));
@@ -739,7 +753,7 @@ class _Home extends State<Home>{
                                 ),
                                 child: InkWell(
                                   child: const Center(
-                                    child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,),),
+                                    child: Text("계획한 휴식이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
                                   ),
                                   onTap: (){
                                     Navigator.pushNamed(context, '/recharge');
