@@ -16,6 +16,7 @@ import 'package:scheduling/schModel.dart';
 import 'detail.dart';
 import 'login.dart';
 import 'timeline.dart';
+import 'package:timer_builder/timer_builder.dart';
 
 var now = DateTime.now();
 
@@ -148,16 +149,7 @@ class _Home extends State<Home>{
       body: StreamBuilder<List<schModel>>(
           stream: streamSch(),
           builder: (context, snapshot){
-            int currentHour = int.parse(DateTime.now().toString().substring(11, 13));
-
-            //print(currentTime);
-            if(currentHour >= 21){
-              closeDay = true;
-            }
-
-            else {
-              closeDay = false;
-            }
+            int currentHour=0;
 
             if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
               return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
@@ -177,97 +169,100 @@ class _Home extends State<Home>{
 
               return ListView(
                 children: [
-                  closeDay == false ?
-
-                  Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
-                    child: Container(
-                      width: 50,
-                      height: 320,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.deepPurple,
-                      ),
-                      child: Column( // percentage
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 10,),
-                          sch.isEmpty? Container() : Progress(),
-                          Align( // text1
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 20, left: 20,),
-                              child:
-                              sch.isEmpty?
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                  TimerBuilder.periodic(Duration(seconds:1),
+                    builder: (BuildContext context) {
+                      currentHour = int.parse(DateTime.now().toString().substring(11, 13));
+                      if(currentHour >= 21 && currentHour < 24){
+                        return Padding(
+                          padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
+                          child: InkWell(
+                            child: Container(
+                              width: 50,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.indigoAccent,
+                              ),
+                              child: Column( // percentage
                                 children: [
-                                  Text('$id님', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold,),),
-                                  Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white, fontSize: 15,),)
+                                  const SizedBox(height: 10,),
+                                  // Progress(),
+                                  Expanded(
+                                    child: Container(
+                                      child: Lottie.network("https://assets6.lottiefiles.com/temp/lf20_Jj2Qzq.json"),
+                                    ),
+                                  ),
+                                  const Align( // text1
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 20, left: 20,),
+                                      child: Text('밤 9시가 지났어요!', style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                                    ),
+                                  ),
+                                  const Align( // text2
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 10, left: 20,),
+                                      child: Text("오늘 하루를 마무리 하러 가볼까요?                       >> ", style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10,),
                                 ],
-                              ) : //default
-                              Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,),),
+                              ),
                             ),
+                            onTap: (){
+                              Navigator.pushNamed(context, "/closeDay", arguments:closeDayArguments(sch, Rsch));
+                            },
                           ),
-                          Align( // text2
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, left: 20,),
-                              child: sch.isEmpty?
-                              const Text("일정을 추가하면\n오늘의 상세 내용을 볼 수 있습니다!", style: TextStyle(color: Colors.black,),)    :
-                              Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,),),
-                            ),
+                        );
+                      }
+                      else return Padding(
+                        padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
+                        child: Container(
+                          width: 50,
+                          height: 320,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.deepPurple,
                           ),
-                        ],
-                      ),
-                    ),
-                  )
-                 :
-                  Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 30,),
-                    child: InkWell(
-                      child: Container(
-                        width: 50,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.indigoAccent,
+                          child: Column( // percentage
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 10,),
+                              sch.isEmpty? Container() : Progress(),
+                              Align( // text1
+                                alignment: Alignment.bottomLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20, left: 20,),
+                                  child:
+                                  sch.isEmpty?
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('$id님', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold,),),
+                                      Text('아직 일정이 없습니다. 일정을 추가해 주세요.', style: TextStyle(color: Colors.white,),)
+                                    ],
+                                  ) : //default
+                                  Text('${((finishedCount/length)*100).round()}% 진행중이에요.', style: TextStyle(color: Colors.white,),),
+                                ),
+                              ),
+                              Align( // text2
+                                alignment: Alignment.bottomLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 10, left: 20,),
+                                  child: sch.isEmpty?
+                                  const Text("일정을 추가하면\n오늘의 상세 내용을 볼 수 있습니다!", style: TextStyle(color: Colors.black,),)    :
+                                  Text("${sch.length} 중에 ${finishedCount} 개 완료", style: TextStyle(color: Colors.white,),),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Column( // percentage
-                          children: [
-                            const SizedBox(height: 10,),
-                            // Progress(),
-                            Expanded(
-                              child: Container(
-                                child: Lottie.network("https://assets6.lottiefiles.com/temp/lf20_Jj2Qzq.json"),
-                              ),
-                            ),
-                            const Align( // text1
-                              alignment: Alignment.bottomLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 20, left: 20,),
-                                child: Text('밤 9시가 지났어요!', style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-                              ),
-                            ),
-                            const Align( // text2
-                              alignment: Alignment.bottomLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 20,),
-                                child: Text("오늘 하루를 마무리 하러 가볼까요?                       >> ", style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                              ),
-                            ),
-                            const SizedBox(height: 10,),
-                          ],
-                        ),
-                      ),
-                      onTap: (){
-                        Navigator.pushNamed(context, "/closeDay", arguments:closeDayArguments(sch, Rsch));
-                      },
-                    ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 30,),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children:[
