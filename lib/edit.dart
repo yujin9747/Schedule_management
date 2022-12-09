@@ -571,24 +571,20 @@ class edtime extends StatelessWidget {
                         rotateLabels: false,
                         padding: 60);
 
-                    if (kDebugMode) {
-                      var st = result?.startTime.toString().split("TimeOfDay(",)[1].split(")")[0];
-                      var end = result?.endTime.toString().split("TimeOfDay(",)[1].split(")")[0];
+                    var st = result?.startTime.toString().split("TimeOfDay(",)[1].split(")")[0];
+                    var end = result?.endTime.toString().split("TimeOfDay(",)[1].split(")")[0];
 
-                      if(st!=null && end!=null){
-                        if(sch.timeLined == false){
-                          ref.update({
-                            'timeLined': true,
-                          });
-                        }
-
+                    if(st!=null && end!=null){
+                      if(sch.timeLined == false){
                         ref.update({
-                          'startTime': st.toString(),
-                          'endTime': end.toString(),
+                          'timeLined': true,
                         });
                       }
 
-                      print(end);
+                      ref.update({
+                        'startTime': st.toString(),
+                        'endTime': end.toString(),
+                      });
                     }
                   },
                   child: const Text("Edit Time range"),

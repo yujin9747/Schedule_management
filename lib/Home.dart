@@ -358,7 +358,7 @@ class _Home extends State<Home>{
                                                           // 내일 일정은 고려 안하고 오늘 일정에서 체크하는 것만 고려해서 짬
                                                           // 사실상 오늘 일정 완료하기 기능을 쓰는게 정상적이니 이대로 해도 될 듯?
                                                           print('schedules/$uid/$dateformat');
-                                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc(schYTime[index].title);
+                                                          final docRef = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').doc(schYTime[index].docid);
                                                           docRef.update({
                                                             'check': value,
                                                           });
