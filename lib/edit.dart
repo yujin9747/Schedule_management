@@ -437,7 +437,7 @@ class eddate extends StatelessWidget {
                     initialValue: '',
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    dateLabelText: 'Day To Do : ${sch.dayToDo}',
+                    dateLabelText: 'End Date : ${sch.dueDate}',
                     onChanged: (val) {
                       ref.update({
                         'dueDate': val.toString(),

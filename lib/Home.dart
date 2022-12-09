@@ -311,7 +311,7 @@ class _Home extends State<Home>{
                                           color: Colors.black38),
                                       InkWell(
                                         child: SizedBox(
-                                          height: 120,
+                                          height: 130,
                                           width: 270,
                                           child: Card(
                                             child:Padding(
