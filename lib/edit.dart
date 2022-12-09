@@ -101,6 +101,7 @@ class _Edit extends State<Edit>{
             ),
           ),
 
+          widget.sch.timeLined == true?
           Card(
             child: ListTile(
               title: Text('Edit time'),
@@ -114,7 +115,7 @@ class _Edit extends State<Edit>{
                 );
               },
             ),
-          ),
+          ): Container(),
 
           Card(
             child: ListTile(
@@ -158,12 +159,8 @@ class _Edit extends State<Edit>{
                 onTap: (){
                   ref.delete();
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Home(),
-                    ),
-                  );
+                  Navigator.pop(context);
+                  Navigator.pop(context);
 
                   final snackBar = SnackBar(
                     elevation: 0,
@@ -264,12 +261,9 @@ class edtitle extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -357,12 +351,10 @@ class edmemo extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -482,12 +474,9 @@ class eddate extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -604,49 +593,46 @@ class edtime extends StatelessWidget {
                   },
                   child: const Text("Edit Time range"),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 150, right: 150,),
-                  child: TextButton(
-                    onPressed: () {
-                      final snackBar = SnackBar(
-                        elevation: 0,
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: Colors.transparent,
-                        content: AwesomeSnackbarContent(
-                          title: '수정완료!',
-                          message:
-                          '시간이 수정되었습니다. :)',
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 150, right: 150,),
+            child: TextButton(
+              onPressed: () {
+                final snackBar = SnackBar(
+                  elevation: 0,
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  content: AwesomeSnackbarContent(
+                    title: '수정완료!',
+                    message:
+                    '시간이 수정되었습니다. :)',
 
-                          contentType: ContentType.success,
-                        ),
-                      );
+                    contentType: ContentType.success,
+                  ),
+                );
 
-                      ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(snackBar);
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
-                      );
-                    },
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          side: const BorderSide(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    side: const BorderSide(
+                      color: Colors.black,
                     ),
-                    child: const Text(
-                      'Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
                   ),
                 ),
-              ],
+              ),
+              child: const Text(
+                'Save', style: TextStyle(color: Colors.black, fontSize: 15,),),
             ),
           ),
         ],
@@ -729,12 +715,9 @@ class edimpt extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -853,12 +836,9 @@ class edloc extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(

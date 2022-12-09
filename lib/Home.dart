@@ -123,13 +123,13 @@ class _Home extends State<Home>{
               }
             ),
             DrawerList(text: '홈', icon: Icons.home, route:'/'),
-            DrawerList(text: '로그아웃', icon: Icons.logout, route:'/login'),
-            //DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '월별 일정 보기', icon: Icons.calendar_today, route:'/monthly'),
+            DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
             DrawerList(text: '오늘 일정 추가하기', icon: Icons.add_circle, route: '/addSchedule'),
             DrawerList(text: '내일 일정 추가하기', icon: Icons.schedule_rounded, route:'/addSchedule'),
-            DrawerList(text: '내일 일정 미리보기', icon: Icons.notes, route:'/tomorrow'),
             DrawerList(text: '휴식 계획하기', icon: Icons.face_retouching_natural, route:'/recharge'),
             DrawerList(text: '등록된 일정에서 추가하기', icon: Icons.view_module_outlined, route:'/addModule'),
+            DrawerList(text: '로그아웃', icon: Icons.logout, route:'/login'),
           ],
         ),
       ),
@@ -287,7 +287,7 @@ class _Home extends State<Home>{
                       Padding( // time line
                         padding: const EdgeInsets.only(left: 30, bottom: 30,),
                         child: SizedBox(
-                          height: 270,
+                          height: schYTime.length == 1? 135 : 270,
                           child :
                           ListView.builder(
                             itemCount: schYTime.length,
@@ -328,6 +328,7 @@ class _Home extends State<Home>{
                                                       Expanded(child: Container()),
                                                       IconButton(
                                                         onPressed: (){
+                                                          print(schYTime.length);
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -424,7 +425,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoTime.isNotEmpty?
 
                       SizedBox(
-                        height: 160,
+                        height: schNoTime.length == 1? 110 : 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoTime.length,
 
@@ -541,7 +542,7 @@ class _Home extends State<Home>{
                       sch.isNotEmpty && schNoToday.isNotEmpty?
 
                       SizedBox(
-                        height: 160,
+                        height: schNoToday.length == 1? 110 : 160,
                         child: ListView.builder( // 여기 default 조건 넣어야함
                           itemCount: schNoToday.length,
 

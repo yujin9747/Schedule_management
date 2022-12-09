@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scheduling/schModel.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'detail.dart';
+
 final uid = FirebaseAuth.instance.currentUser?.uid;
 var now = DateTime.now();
+List<schModel> sch = [];
 String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
 
 class monthlySchedule extends StatefulWidget{
@@ -30,9 +34,21 @@ class _monthlySchedule extends State<monthlySchedule>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:Text('월별 일정'),
+        toolbarHeight: 80,
+        title: const Text('Monthly', style: TextStyle(fontSize: 30, color: Colors.black),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: Builder( // menu icon
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            onPressed: ()=>Navigator.pop(context), // open drawer
+          ),
+        ),
       ),
       body:Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TableCalendar(
             firstDay:DateTime.utc(today.year-1, today.month, today.day),  // 사용자가 접근할 수 있는 첫 날짜
@@ -52,12 +68,14 @@ class _monthlySchedule extends State<monthlySchedule>{
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
+                  print(_selectedDay.toString().split(" ",)[0]);
                   //_selectedEvents = _getEventsForDay(selectedDay);
                 });
               }
             },
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
+              print(focusedDay);
             },
             calendarBuilders: CalendarBuilders( // Custom ui
               dowBuilder: (context, day) {
@@ -72,39 +90,116 @@ class _monthlySchedule extends State<monthlySchedule>{
                 }
               },
             ),
-            // eventLoader: (day) {
-            //   return _getEventsForDay(day);
-            //   //return streamSch();
-            // },
           ),
-          // Expanded(
-          //     child: ListView.builder(
-          //         itemBuilder: (context, idx){
-          //
-          //         },
-          //     ),
-          // ),
+          Divider(
+              color: Colors.black
+          ),
+          Padding(padding: EdgeInsets.only(left: 20, top: 10,),child: Text("일정 List", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,),)),
+          StreamBuilder<List<schModel>>(
+            stream: streamSch(_selectedDay),
+            builder: (context, snapshot){
+              if (snapshot.data == null) { //데이터가 없을 경우 로딩위젯
+                return Center(child: Column(children: [CircularProgressIndicator(), Text(uid!)]));
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('오류가 발생했습니다.'),
+                );
+              }else{
+                sch = snapshot.data!;
+                return sch.isNotEmpty?
+                    Padding(
+                        padding: EdgeInsets.only(left: 30, top: 10,),
+                        child: Column(
+                          children: [
+                            Container(
+                            height: 220,
+                            child: ListView.builder(
+                                itemCount: sch.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 20,),
+                                    child: Card(
+                                      elevation: 0,
+                                      child: ListTile(
+                                        title:
+                                        Row(
+                                            children: [
+                                              Text(sch[index].title,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                    decoration: sch[index].check?
+                                                    TextDecoration.lineThrough : TextDecoration.none,
+                                                    color: sch[index].check? Colors.grey : Colors.black,
+                                                    fontStyle: sch[index].check? FontStyle.italic : FontStyle.normal,)),
+                                              Flexible(
+                                                fit: FlexFit.tight,
+                                                child: Container(
+                                                  width: 50,
+                                                ),
+                                              ),
+                                              sch[index].timeLined ?
+                                              Column(children: [
+                                                Text(sch[index].startTime,),
+                                                Text(sch[index].endTime,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),),
+                                              ])
+                                                  : Container(),
+                                            ]
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Detail(sch[index]),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }
+                              ),
+                            ),
+                          ],
+                        ),
+                    )
+                    :
+                const SizedBox(
+                  height: 150,
+                  child:
+                  Center(
+                    child: Text('일정이 없습니다!'),
+                  ),
+                );
+              }
+            }
+          ),
         ],
       ),
 
     );
   }
 
-  Stream<List<schModel>> streamSch(){
+  Stream<List<schModel>> streamSch(date){
+    date = date.toString().split(" ",)[0];
+
     try{
 
-      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').snapshots();
-
+      final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$date').snapshots();
+      print('schedule/$uid/$date');
       return snapshots.map((querySnapshot){
         List<schModel> sch = [];
-        querySnapshot.docs.forEach((element) {
+        for (var element in querySnapshot.docs) {
           sch.add(
               schModel.fromMap(
                   id:element.id,
                   map:element.data() as Map<String, dynamic>
               )
           );
-        });
+        }
         return sch;
       });
     }catch(ex){
@@ -113,38 +208,3 @@ class _monthlySchedule extends State<monthlySchedule>{
     }
   }
 }
-
-Future<List<Object?>> _getEventsForDay(DateTime day) async {
-  final docList = FirebaseFirestore.instance.collection('schedules/$uid/$day');
-
-  //List<schModel> todaySchedules = [];
-  QuerySnapshot querySnapshot = await docList.get();
-  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-  return allData;
-  //return todaySchedules;
-}
-
-// Stream<List<schModel>> _getEventsForDay(DateTime day){
-//   try{
-//     final uid = FirebaseAuth.instance.currentUser?.uid;
-//     var now = DateTime.now();
-//     String dateformat = DateFormat('yyyy-M-dd').format(now).toString();
-//     final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection('schedules/$uid/$dateformat').snapshots();
-//
-//     return snapshots.map((querySnapshot){
-//       List<schModel> sch = [];
-//       querySnapshot.docs.forEach((element) {
-//         sch.add(
-//             schModel.fromMap(
-//                 id:element.id,
-//                 map:element.data() as Map<String, dynamic>
-//             )
-//         );
-//       });
-//       return sch;
-//     });
-//   }catch(ex){
-//     log('error)', error : ex.toString(), stackTrace: StackTrace.current);
-//     return Stream.error(ex.toString());
-//   }
-// }
