@@ -127,7 +127,11 @@ class _monthlySchedule extends State<monthlySchedule>{
                                               Text(sch[index].title,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 16,)),
+                                                    fontSize: 16,
+                                                    decoration: sch[index].check?
+                                                    TextDecoration.lineThrough : TextDecoration.none,
+                                                    color: sch[index].check? Colors.grey : Colors.black,
+                                                    fontStyle: sch[index].check? FontStyle.italic : FontStyle.normal,)),
                                               Flexible(
                                                 fit: FlexFit.tight,
                                                 child: Container(
