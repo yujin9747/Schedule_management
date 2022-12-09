@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -157,8 +158,8 @@ class _Tomorrow extends State<Tomorrow>{
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
-                                          Text(tSchYTime[index].startTime),
-                                          Text(tSchYTime[index].endTime),
+                                          Text(tSchYTime[index].startTime, style: TextStyle(fontSize: 12,),),
+                                          Text(tSchYTime[index].endTime, style: TextStyle(fontSize: 12,),),
                                         ],
                                       ),
                                     ),
@@ -168,7 +169,7 @@ class _Tomorrow extends State<Tomorrow>{
                                         color: Colors.black38),
                                     InkWell(
                                       child: SizedBox(
-                                        height: 120,
+                                        height: 70,
                                         width: 270,
                                         child: Card(
                                           child:Padding(
@@ -176,50 +177,34 @@ class _Tomorrow extends State<Tomorrow>{
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      tSchYTime[index].title,
-                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
-                                                    ),
-                                                    Expanded(child: Container()),
-                                                    IconButton(
-                                                      onPressed: (){
-                                                        print(tSchYTime.length);
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) => Detail(tSch[index]),
-                                                          ),
-                                                        );
-                                                      },
-                                                      icon: Icon(Icons.more_vert),
-                                                    ),
-                                                  ],
-                                                ),
+                                                const SizedBox(height: 10,),
                                                 Text(
-                                                  tSchYTime[index].memo.split('\n').first,  // 여러줄일 경우 overflow.elipsis가 해결해주지 못하기 때문에 홈에서는 간단히 첫 줄만 표기
-                                                  style: const TextStyle(fontSize: 13),
-                                                  overflow: TextOverflow.ellipsis,  // 첫 줄이 길이서 overflow 발생할 경우 생략 표기
+                                                  tSchYTime[index].title,
+                                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Text("장소 : ${tSchYTime[index].where}"),
-                                                    Expanded(child: Container(),),
-                                                  ],
-                                                ),
+                                                const SizedBox(height: 10,),
                                               ],
                                             ),
                                           ),
                                         ),
                                       ),
                                       onTap:(){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Detail(tSchYTime[index]),
+                                        final snackBar = SnackBar(
+                                          elevation: 0,
+                                          behavior: SnackBarBehavior.floating,
+                                          backgroundColor: Colors.transparent,
+                                          content: AwesomeSnackbarContent(
+                                            title: '${tSchYTime[index].title}',
+                                            message:
+                                            '${tSchYTime[index].memo}',
+
+                                            contentType: ContentType.help,
                                           ),
                                         );
+
+                                        ScaffoldMessenger.of(context)
+                                          ..hideCurrentSnackBar()
+                                          ..showSnackBar(snackBar);
                                       },
                                     ),
                                   ],
@@ -283,12 +268,22 @@ class _Tomorrow extends State<Tomorrow>{
                                   ),
                               ),
                               onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Detail(tSch[index]),
+                                final snackBar = SnackBar(
+                                  elevation: 0,
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                  content: AwesomeSnackbarContent(
+                                    title: '${tSchNoTime[index].title}',
+                                    message:
+                                    'start date: ${tSchNoTime[index].startDate}\nend date: ${tSchNoTime[index].dueDate}',
+
+                                    contentType: ContentType.help,
                                   ),
                                 );
+
+                                ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(snackBar);
                               },
                             );
                           },
@@ -321,7 +316,7 @@ class _Tomorrow extends State<Tomorrow>{
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40,),
+                  const SizedBox(height: 30,),
                 ],
               );
             }
