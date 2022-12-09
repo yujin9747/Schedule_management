@@ -264,9 +264,6 @@ class _AddSchedule extends State<AddSchedule>{
                         ],
                       ),
                     ),
-                    DropdownMenuItem(
-                      child: Text('직접 입력'),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 20,),
