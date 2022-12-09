@@ -159,7 +159,8 @@ class _Edit extends State<Edit>{
                 onTap: (){
                   ref.delete();
 
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                  Navigator.pop(context);
+                  Navigator.pop(context);
 
                   final snackBar = SnackBar(
                     elevation: 0,
@@ -260,12 +261,8 @@ class edtitle extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Home(),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -354,7 +351,8 @@ class edmemo extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -474,7 +472,8 @@ class eddate extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -615,7 +614,8 @@ class edtime extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -711,7 +711,8 @@ class edimpt extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -830,7 +831,8 @@ class edloc extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
