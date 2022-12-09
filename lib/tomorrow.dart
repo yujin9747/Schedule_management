@@ -237,14 +237,14 @@ class _Tomorrow extends State<Tomorrow>{
                             height: 100,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.pink.shade200,
+                              border: Border.all(color: Colors.black),
                             ),
                             child: InkWell(
                               child: const Center(
-                                child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
+                                child: Text("일정이 없어요 :)", style: TextStyle(color: Colors.black, fontSize: 13,),),
                               ),
                               onTap: (){
-                                Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('tommorrow'));
+
                               },
                             ),
                           ),
@@ -305,14 +305,14 @@ class _Tomorrow extends State<Tomorrow>{
                               height: 100,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.purple.shade200,
+                                border: Border.all(color: Colors.black),
                               ),
                               child: InkWell(
                                 child: const Center(
-                                  child: Text("일정이 없어요.\n(눌러서 추가하기)", style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),),
+                                  child: Text("일정이 없어요 :)", style: TextStyle(color: Colors.black, fontSize: 13,),),
                                 ),
                                 onTap: (){
-                                  Navigator.pushNamed(context, '/addSchedule', arguments: addScheduleArguments('tommorrow'));
+
                                 },
                               ),
                             ),
