@@ -283,7 +283,12 @@ class _Tomorrow extends State<Tomorrow>{
                                   ),
                               ),
                               onTap: (){
-
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Detail(tSch[index]),
+                                  ),
+                                );
                               },
                             );
                           },
