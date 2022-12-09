@@ -134,7 +134,7 @@ class _Tomorrow extends State<Tomorrow>{
                     children:[
                       const Padding(
                         padding: EdgeInsets.only(left: 37,),
-                        child: Text("시간 순 일정", style: TextStyle(
+                        child: Text("내일 시간 순 일정", style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),),
                       ),
                       const SizedBox(height: 20,),
@@ -257,7 +257,7 @@ class _Tomorrow extends State<Tomorrow>{
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(left: 37, bottom: 10,),
-                        child: Text("내일 마감해야 하는 일", style: TextStyle(
+                        child: Text("내일 일정 중 내일 마감해야 하는 일", style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),),
                       ),
 

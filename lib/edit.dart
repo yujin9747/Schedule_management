@@ -263,6 +263,7 @@ class edtitle extends StatelessWidget {
 
                 Navigator.pop(context);
                 Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -351,6 +352,7 @@ class edmemo extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -472,6 +474,7 @@ class eddate extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
 
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -616,6 +619,7 @@ class edtime extends StatelessWidget {
 
                 Navigator.pop(context);
                 Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -711,6 +715,7 @@ class edimpt extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -831,6 +836,7 @@ class edloc extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
