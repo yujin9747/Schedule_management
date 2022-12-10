@@ -2,10 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scheduling/addSchedule.dart';
 import 'package:scheduling/login.dart';
+import 'package:scheduling/monthlySchedule.dart';
 import 'package:scheduling/timeline.dart';
+import 'package:scheduling/tomorrow.dart';
 import 'Home.dart';
 import 'Recharge.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'addModule.dart';
+import 'closeDay.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +35,10 @@ class MyApp extends StatelessWidget {
         '/login' : (context) => Login(),
         '/addSchedule' : (context) => AddSchedule(),
         '/timeline':(context) => TimeLine(),
+        '/monthly':(context) => monthlySchedule(),
+        '/tomorrow':(context) => Tomorrow(),
+        '/addModule':(context) => AddModule(),
+        '/closeDay':(context) => CloseDay(),
       },
       debugShowCheckedModeBanner: false,
     );
